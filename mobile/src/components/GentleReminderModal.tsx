@@ -16,7 +16,7 @@ export const GentleReminderModal: React.FC<GentleReminderModalProps> = ({ visibl
   const activeTemplate =
     GENTLE_REMINDER_TEMPLATES.find((t) => t.id === selectedTemplateId) || GENTLE_REMINDER_TEMPLATES[0];
   const reminderMessage = activeTemplate.text(
-    loan.borrowerName || 'শ্রদ্ধেয় ভাই',
+    loan.borrowerName || 'Respected Brother/Sister',
     loan.installmentAmount || loan.remainingAmount,
     loan.dueDate
   );
@@ -30,7 +30,10 @@ export const GentleReminderModal: React.FC<GentleReminderModalProps> = ({ visibl
       await Linking.openURL(url);
       onClose();
     } else {
-      Alert.alert('হোয়াটসঅ্যাপ পাওয়া যায়নি', 'আপনার ডিভাইসে WhatsApp ইনস্টল করা নেই। তবে মেসেজটি কপি করা হয়েছে: \n\n' + reminderMessage);
+      Alert.alert(
+        'WhatsApp Not Found',
+        'WhatsApp is not installed on your device. Here is the reminder message: \n\n' + reminderMessage
+      );
     }
   };
 
@@ -39,18 +42,18 @@ export const GentleReminderModal: React.FC<GentleReminderModalProps> = ({ visibl
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.title}>সুন্নাহ সম্মত ভদ্র স্মরণিকা</Text>
+            <Text style={styles.title}>Sunnah-Compliant Gentle Reminder</Text>
             <TouchableOpacity onPress={onClose}>
               <Text style={styles.closeBtn}>✕</Text>
             </TouchableOpacity>
           </View>
 
           <Text style={styles.subtitle}>
-            ইসলামে ঋণগ্রহীতাকে সর্বদা সম্মান ও ভদ্রতার সাথে স্মরণ করিয়ে দেওয়া সুন্নাহ। কোনো প্রকার চাপ সৃষ্টি বা অপমানজনক কথা নিষিদ্ধ।
+            In Islam, reminding a debtor with grace, respect, and compassion is a noble Sunnah. Any form of coercion, harassment, or dishonor is strictly prohibited.
           </Text>
 
-          {/* টেমপ্লেট নির্বাচন */}
-          <Text style={styles.label}>টেমপ্লেট নির্বাচন করুন</Text>
+          {/* Template Selection */}
+          <Text style={styles.label}>Select Reminder Template</Text>
           {GENTLE_REMINDER_TEMPLATES.map((tmpl) => (
             <TouchableOpacity
               key={tmpl.id}
@@ -63,14 +66,14 @@ export const GentleReminderModal: React.FC<GentleReminderModalProps> = ({ visibl
             </TouchableOpacity>
           ))}
 
-          {/* প্রিভিউ বক্স */}
-          <Text style={styles.label}>মেসেজ প্রিভিউ</Text>
+          {/* Message Preview */}
+          <Text style={styles.label}>Message Preview</Text>
           <View style={styles.previewBox}>
             <Text style={styles.previewText}>{reminderMessage}</Text>
           </View>
 
           <TouchableOpacity style={styles.sendBtn} onPress={handleSendWhatsApp}>
-            <Text style={styles.sendBtnText}>হোয়াটসঅ্যাপে পাঠান 💬</Text>
+            <Text style={styles.sendBtnText}>Send via WhatsApp 💬</Text>
           </TouchableOpacity>
         </View>
       </View>

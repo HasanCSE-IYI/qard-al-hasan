@@ -1,63 +1,80 @@
-# কর্জ্যে হাসানাহ (Qard al-Hasan) ম্যানেজমেন্ট ইকোসিস্টেম 🕊️
+# Qard al-Hasan (Benevolent Loan) Management Ecosystem 🕊️
 
-> **"কে সেই ব্যক্তি, যে আল্লাহকে উত্তম ঋণ (কর্জ্যে হাসানাহ) দেবে? অতঃপর তিনি তার জন্য তা বহুগুণ বৃদ্ধি করে দেবেন এবং তার জন্য রয়েছে সম্মানজনক প্রতিদান।"** — (সূরা আল-হাদীদ: ১১)
+> **"Who is it that will lend to Allah a good loan (Qard al-Hasan) so that He may multiply it for him many times over and there is for him an honorable reward?"** — (Surah Al-Hadid: 11)
 
-একটি আধুনিক, ১০০% সুদহীন, স্বচ্ছ এবং শরীয়াহ-সম্মত ইসলামিক ফিনটেক ইকোসিস্টেম। ব্যক্তি, পরিবার, মসজিদ ও সমাজকল্যাণমূলক ট্রাস্ট ফান্ডের কর্জ আদান-প্রদান, কিস্তি ট্র্যাকিং, অসিয়তনামা ও ঋণ মওকুফ (সদকাহ) পরিচালনার জন্য তৈরি।
-
----
-
-## 🌟 প্রধান বৈশিষ্ট্যসমূহ (Key Features)
-
-- 🚫 **মুত্বলাক্ব রিবা-মুক্ত (Zero Interest):** কোনো প্রকার প্রচ্ছন্ন সুদ, সার্ভিস চার্জ বা প্রসেসিং ফি নেই।
-- 📝 **আল-কিতাবাহ ওয়াল ইশহাদ (সূরা বাক্বারাহ: ২৮২):** স্বয়ংক্রিয় ডিজিটাল চুক্তিপত্র (Digital Aqd) ও সাক্ষীদের ডিজিটাল স্বাক্ষর।
-- ⏳ **ইনযারুল মু'সির (Grace Period / No Penalty):** অসচ্ছল গ্রহীতার জন্য জরিমানা ছাড়া কিস্তি পুনর্গঠন ও সময়সীমা বৃদ্ধির মানবিক আবেদন।
-- 🤲 **আল-ইব্‌রা (Debt Relief / Sadaqah):** সম্পূর্ণ বা আংশিক ঋণ মাফ করার প্রাতিষ্ঠানিক ফ্লো ও সদকাহ সনদপত্র।
-- 📜 **আল-ওয়াসিয়্যাহ (Islamic Will & Debt Clearance):** মৃত্যুর পর ওয়ারিশদের জন্য এক ক্লিকে দেনা-পাওনার সত্যায়িত বিবরণী (PDF) এক্সপোর্ট।
-- 📱 **বিকাশ/নগদ SMS স্মার্ট পার্সার:** ট্রানজ্যাকশন মেসেজ কপি-পেস্টে স্বয়ংক্রিয় TrxID ও পেমেন্ট এন্ট্রি।
-- 🔒 **বায়োমেট্রিক ও প্রাইভেসি মোড:** ফিঙ্গারপ্রিন্ট আনলক এবং জনসম্মুখে টাকার অংক ব্লার করার জন্য শেক-টু-হাইড জেসচার।
-- ☁️ **ক্লাউডফ্লেয়ার ফ্রি-টিয়ার অপটিমাইজেশন:** Cloudflare Workers, D1 (Distributed SQLite), R2 (Storage), এবং KV দ্বারা পরিচালিত।
+A modern, 100% interest-free (Riba-free), transparent, and Shariah-compliant Islamic FinTech ecosystem. Engineered for individuals, families, mosques, and community welfare trusts to manage benevolent loans, installment tracking, Islamic inheritance debt clearance (Al-Wasiyyah), and voluntary debt forgiveness (Al-Ibra / Sadaqah).
 
 ---
 
-## 🏛️ প্রজেক্টের গঠন (Monorepo Structure)
+## 🌟 Key Features
+
+- 🚫 **Zero-Riba & No Hidden Charges:** Completely free from interest, late payment penalties, service markups, or processing surcharges.
+- 📝 **Digital Aqd Contracts (Surah Al-Baqarah: 282):** Automated bilateral loan agreement generation with witness countersignatures and cryptographic SHA-256 integrity hashes.
+- ⏳ **Inzar al-Mu'sir (Grace Period / Rescheduling):** Compassionate term extensions for financially strained borrowers without compound penalties or coercive measures (Surah Al-Baqarah: 280).
+- 🤲 **Al-Ibra (Voluntary Debt Forgiveness / Sadaqah):** Formal waiver workflows enabling creditors to forgive whole or partial loans as certified charity.
+- 📜 **Al-Wasiyyah (Islamic Inheritance & Debt Clearance):** Instant generation and export of certified debt statements ensuring liabilities are settled prior to estate distribution (Sahih al-Bukhari: 2738).
+- 📱 **Mobile Financial Services (bKash & Nagad) Parser:** Instant regex parsing of transaction SMS texts to auto-populate Transaction ID and repayment amount.
+- 🔒 **Privacy & Islamic Aesthetic Design:** Clean Islamic FinTech design with Emerald & Gold accents, status tracking, and privacy-conscious balance hiding.
+- ☁️ **Cloudflare Free-Tier Architecture:** Powered globally by Cloudflare Workers (Edge runtime), D1 (Distributed SQLite), R2 (Receipt storage), and KV.
+
+---
+
+## 🏛️ Monorepo Architecture
 
 ```text
 /
-├── backend/        # Cloudflare Workers API (Hono + Drizzle ORM + D1 + R2)
-├── mobile/         # React Native Mobile App (NativeWind / Tailwind + Zustand)
-├── shared/         # শেয়ার্ড Zod ভ্যালিডেশন স্কিমা ও TypeScript টাইপস
-├── package.json    # Monorepo Workspaces কনফিগারেশন
+├── backend/        # Cloudflare Workers API (Hono + Drizzle ORM + D1 SQLite + R2 Storage)
+├── mobile/         # React Native Cross-Platform App (TypeScript + Zustand + Offline MFS Parser)
+├── shared/         # Shared domain models, Zod validation schemas, and TypeScript interfaces
+├── package.json    # Monorepo workspaces orchestration
 └── README.md
 ```
 
 ---
 
-## 🚀 দ্রুত শুরু করার নির্দেশিকা (Quick Start)
+## 🚀 Quick Start Guide
 
-### ১. ডিপেন্ডেন্সি ইনস্টলেশন
+### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### ২. ব্যাকএন্ড লোকাল ডেভেলপমেন্ট
+### 2. Backend Local Development
 ```bash
 npm run dev:backend
 ```
+The local Cloudflare Workers dev server runs at `http://127.0.0.1:8787` backed by an in-memory/file-based SQLite D1 compatibility bridge.
 
-### ৩. মোবাইল অ্যাপ্লিকেশন রান
+### 3. Run Mobile Application
 ```bash
 npm run start:mobile
 ```
 
+### 4. Build Android Debug APK
+```bash
+cd mobile/android
+gradle assembleDebug
+```
+The resulting APK is generated at:
+`mobile/android/app/build/outputs/apk/debug/app-debug.apk`
+
 ---
 
-## 📜 শরীয়াহ ও ইসলামিক গভর্ন্যান্স রেফারেন্স
-- **পবিত্র কুরআন:** সূরা আল-বাক্বারাহ (২৮০, ২৮২), সূরা আল-হাদীদ (১১)।
-- **সহীহ বুখারী:** হাদিস ২৩৯০ (উত্তম পরিশোধ ও হুসনুল ক্বাযা)।
-- **AAOIFI স্ট্যান্ডার্ড ১৯:** কর্জ ও প্রত্যক্ষ প্রশাসনিক ব্যয় নীতিমালা।
+## 📜 Shariah & Islamic Governance Framework
+
+- **The Holy Quran:**
+  - Surah Al-Baqarah (2:280) — Postponement for borrowers in hardship & virtue of forgiving debt as charity.
+  - Surah Al-Baqarah (2:282) — Commandment to record all debt transactions in writing with witnesses.
+  - Surah Al-Hadid (57:11) — The spiritual merit of offering benevolent loans for the sake of Allah.
+- **Sahih al-Bukhari:**
+  - Hadith 2390 — Good repayment ethics and Husn al-Qada (courtesy in settlement).
+  - Hadith 2738 — Obligation to record debts and wills (Al-Wasiyyah) within two nights.
+- **AAOIFI Shariah Standard No. 19:**
+  - Governance on benevolent lending, prohibition of stipulated benefit to the lender, and actual administrative expense boundaries.
 
 ---
 
-## 👨‍💻 লেখক ও লাইসেন্স
-- **ডেভেলপার:** Mahmud al Hasan ([@HasanCSE-IYI](https://github.com/HasanCSE-IYI))
-- **লাইসেন্স:** [MIT License](LICENSE)
+## 👨‍💻 Author & License
+
+- **Developer:** Mahmud al Hasan ([@HasanCSE-IYI](https://github.com/HasanCSE-IYI))
+- **License:** [MIT License](LICENSE)

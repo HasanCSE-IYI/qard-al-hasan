@@ -41,20 +41,20 @@ export const NewLoanScreen: React.FC<NewLoanScreenProps> = ({ onBack, onSuccess 
 
   const handleSubmit = () => {
     if (!borrowerName.trim()) {
-      Alert.alert('ত্রুটি', 'ঋণগ্রহীতার নাম প্রদান করুন');
+      Alert.alert('Error', 'Please enter borrower name');
       return;
     }
-    if (!borrowerPhone.trim() || borrowerPhone.length < 11) {
-      Alert.alert('ত্রুটি', 'সঠিক মোবাইল নম্বর (১১ ডিজিট) দিন');
+    if (!borrowerPhone.trim() || borrowerPhone.length < 10) {
+      Alert.alert('Error', 'Please enter a valid phone number');
       return;
     }
     const principal = parseFloat(principalAmount);
     if (isNaN(principal) || principal <= 0) {
-      Alert.alert('ত্রুটি', 'সঠিক টাকার পরিমাণ লিখুন');
+      Alert.alert('Error', 'Please enter a valid loan amount');
       return;
     }
     if (!purpose.trim()) {
-      Alert.alert('ত্রুটি', 'কর্জের উদ্দেশ্য উল্লেখ করুন');
+      Alert.alert('Error', 'Please specify the loan purpose');
       return;
     }
 
@@ -63,7 +63,7 @@ export const NewLoanScreen: React.FC<NewLoanScreenProps> = ({ onBack, onSuccess 
       id: newLoanId,
       lenderId: user?.id || 'user-001',
       borrowerId: `borrower-${Date.now().toString().slice(-4)}`,
-      lenderName: user?.name || 'মাহমুদুল হাসান',
+      lenderName: user?.name || 'Mahmud al Hasan',
       borrowerName,
       principalAmount: principal,
       remainingAmount: principal,
@@ -83,7 +83,7 @@ export const NewLoanScreen: React.FC<NewLoanScreenProps> = ({ onBack, onSuccess 
     };
 
     addLoan(newLoan);
-    Alert.alert('চুক্তি সফল', 'কর্জ্যে হাসানাহ রেকর্ড ও ডিজিটাল চুক্তি সফলভাবে তৈরি হয়েছে।');
+    Alert.alert('Loan Created', 'Qard al-Hasan loan agreement recorded and created successfully.');
     onSuccess(newLoan);
   };
 
@@ -91,33 +91,33 @@ export const NewLoanScreen: React.FC<NewLoanScreenProps> = ({ onBack, onSuccess 
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={onBack}>
-          <Text style={styles.backBtnText}>‹ বাতিল</Text>
+          <Text style={styles.backBtnText}>‹ Cancel</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>নতুন কর্জ্যে হাসানাহ</Text>
+        <Text style={styles.headerTitle}>New Qard al-Hasan</Text>
         <View style={{ width: 40 }} />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        {/* শরীয়াহ বার্তা */}
+        {/* Shariah Guidance Notice */}
         <View style={styles.shariahNotice}>
-          <Text style={styles.shariahNoticeTitle}>পবিত্র কুরআনের নির্দেশ (সূরা বাক্বারাহ: ২৮২)</Text>
+          <Text style={styles.shariahNoticeTitle}>Quranic Injunction (Surah Al-Baqarah: 282)</Text>
           <Text style={styles.shariahNoticeText}>
-            লেনদেন নির্দিষ্ট মেয়াদের জন্য হলে তা পুঙ্খানুপুঙ্খ লিখে রাখা ও সাক্ষী রাখা আবশ্যক। এটি কোনো প্রকার সুদ বা অতিরিক্ত ফি মুক্ত।
+            When you contract a debt for a specified term, record it in writing with witnesses. This loan is 100% free from any interest or fees.
           </Text>
         </View>
 
-        {/* গ্রহীতার তথ্য */}
-        <Text style={styles.sectionHeading}>১. ঋণগ্রহীতার তথ্য</Text>
-        <Text style={styles.label}>গ্রহীতার নাম *</Text>
+        {/* Borrower Info */}
+        <Text style={styles.sectionHeading}>1. Borrower Information</Text>
+        <Text style={styles.label}>Borrower Name *</Text>
         <TextInput
           style={styles.input}
-          placeholder="যেমন: হাফেজ আব্দুল্লাহ"
+          placeholder="e.g. Abdullah Al-Mansur"
           placeholderTextColor={Colors.slate.light}
           value={borrowerName}
           onChangeText={setBorrowerName}
         />
 
-        <Text style={styles.label}>মোবাইল নম্বর *</Text>
+        <Text style={styles.label}>Mobile Phone Number *</Text>
         <TextInput
           style={styles.input}
           placeholder="01711XXXXXX"
@@ -127,19 +127,19 @@ export const NewLoanScreen: React.FC<NewLoanScreenProps> = ({ onBack, onSuccess 
           onChangeText={setBorrowerPhone}
         />
 
-        {/* কর্জের বিবরণ */}
-        <Text style={styles.sectionHeading}>২. কর্জের পরিমাণ ও পরিশোধ পদ্ধতি</Text>
-        <Text style={styles.label}>মূল ঋণের পরিমাণ (টাকা) *</Text>
+        {/* Loan Details */}
+        <Text style={styles.sectionHeading}>2. Loan Amount & Repayment Mode</Text>
+        <Text style={styles.label}>Principal Amount (BDT) *</Text>
         <TextInput
           style={styles.input}
-          placeholder="যেমন: 25000"
+          placeholder="e.g. 25000"
           placeholderTextColor={Colors.slate.light}
           keyboardType="numeric"
           value={principalAmount}
           onChangeText={setPrincipalAmount}
         />
 
-        <Text style={styles.label}>পরিশোধের ধরন</Text>
+        <Text style={styles.label}>Repayment Type</Text>
         <View style={styles.typeRow}>
           <TouchableOpacity
             style={[styles.typeBtn, repaymentType === REPAYMENT_TYPE.MONTHLY_INSTALLMENT && styles.typeBtnActive]}
@@ -151,7 +151,7 @@ export const NewLoanScreen: React.FC<NewLoanScreenProps> = ({ onBack, onSuccess 
                 repaymentType === REPAYMENT_TYPE.MONTHLY_INSTALLMENT && styles.typeTextActive,
               ]}
             >
-              মাসিক কিস্তি
+              Monthly Installments
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -159,17 +159,17 @@ export const NewLoanScreen: React.FC<NewLoanScreenProps> = ({ onBack, onSuccess 
             onPress={() => setRepaymentType(REPAYMENT_TYPE.BULLET)}
           >
             <Text style={[styles.typeText, repaymentType === REPAYMENT_TYPE.BULLET && styles.typeTextActive]}>
-              এককালীন পরিশোধ
+              Lump-Sum Payment
             </Text>
           </TouchableOpacity>
         </View>
 
         {repaymentType === REPAYMENT_TYPE.MONTHLY_INSTALLMENT ? (
           <View style={styles.installmentCalcBox}>
-            <Text style={styles.label}>কিস্তির সংখ্যা</Text>
+            <Text style={styles.label}>Number of Installments</Text>
             <TextInput
               style={styles.input}
-              placeholder="যেমন: 5"
+              placeholder="e.g. 5"
               placeholderTextColor={Colors.slate.light}
               keyboardType="numeric"
               value={installmentCount}
@@ -177,13 +177,13 @@ export const NewLoanScreen: React.FC<NewLoanScreenProps> = ({ onBack, onSuccess 
             />
             {calculatedInstallmentAmount > 0 ? (
               <Text style={styles.calcResult}>
-                প্রতি কিস্তির পরিমাণ: ৳ {calculatedInstallmentAmount.toLocaleString('en-IN')} (সুদহীন)
+                Installment Amount: BDT {calculatedInstallmentAmount.toLocaleString('en-US')} (Zero-Interest)
               </Text>
             ) : null}
           </View>
         ) : null}
 
-        <Text style={styles.label}>পরিশোধের শেষ তারিখ (YYYY-MM-DD)</Text>
+        <Text style={styles.label}>Final Due Date (YYYY-MM-DD)</Text>
         <TextInput
           style={styles.input}
           value={dueDate}
@@ -192,27 +192,27 @@ export const NewLoanScreen: React.FC<NewLoanScreenProps> = ({ onBack, onSuccess 
           placeholderTextColor={Colors.slate.light}
         />
 
-        <Text style={styles.label}>কর্জের সুনির্দিষ্ট উদ্দেশ্য *</Text>
+        <Text style={styles.label}>Specific Loan Purpose *</Text>
         <TextInput
           style={styles.input}
-          placeholder="যেমন: চিকিৎসা ব্যয় / ব্যবসায়িক কাঁচামাল ক্রয়"
+          placeholder="e.g. Emergency medical care / inventory purchase"
           placeholderTextColor={Colors.slate.light}
           value={purpose}
           onChangeText={setPurpose}
         />
 
-        {/* সাক্ষী/জামিনদার */}
-        <Text style={styles.sectionHeading}>৩. সাক্ষী বা জামিনদার (ঐচ্ছিক)</Text>
-        <Text style={styles.label}>সাক্ষীর নাম</Text>
+        {/* Witness / Guarantor */}
+        <Text style={styles.sectionHeading}>3. Witness or Guarantor (Optional)</Text>
+        <Text style={styles.label}>Witness Name</Text>
         <TextInput
           style={styles.input}
-          placeholder="সাক্ষীর নাম লিখুন"
+          placeholder="Enter witness name"
           placeholderTextColor={Colors.slate.light}
           value={witnessName}
           onChangeText={setWitnessName}
         />
 
-        <Text style={styles.label}>সাক্ষীর মোবাইল নম্বর</Text>
+        <Text style={styles.label}>Witness Phone Number</Text>
         <TextInput
           style={styles.input}
           placeholder="01811XXXXXX"
@@ -223,7 +223,7 @@ export const NewLoanScreen: React.FC<NewLoanScreenProps> = ({ onBack, onSuccess 
         />
 
         <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-          <Text style={styles.submitBtnText}>চুক্তিপত্র তৈরি ও কর্জ লিপিবদ্ধ করুন ✍️</Text>
+          <Text style={styles.submitBtnText}>Create Contract & Record Loan ✍️</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

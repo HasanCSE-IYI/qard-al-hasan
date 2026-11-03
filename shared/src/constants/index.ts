@@ -1,5 +1,5 @@
 /**
- * ইসলামিক শরীয়াহ ও কর্জ্যে হাসানাহ ধ্রুবক ও টেমপ্লেট
+ * Islamic Shariah and Qard al-Hasan Constants and Templates
  */
 
 export const LOAN_STATUS = {
@@ -17,10 +17,10 @@ export const LOAN_STATUS = {
 export type LoanStatus = typeof LOAN_STATUS[keyof typeof LOAN_STATUS];
 
 export const REPAYMENT_TYPE = {
-  BULLET: 'BULLET', // এককালীন পরিশোধ
-  MONTHLY_INSTALLMENT: 'MONTHLY_INSTALLMENT', // মাসিক সমান কিস্তি
-  WEEKLY: 'WEEKLY', // সাপ্তাহিক কিস্তি
-  FLEXIBLE: 'FLEXIBLE', // পরিবর্তনশীল
+  BULLET: 'BULLET', // Lump-sum repayment
+  MONTHLY_INSTALLMENT: 'MONTHLY_INSTALLMENT', // Equal monthly installments
+  WEEKLY: 'WEEKLY', // Weekly installments
+  FLEXIBLE: 'FLEXIBLE', // Flexible repayment
 } as const;
 
 export type RepaymentType = typeof REPAYMENT_TYPE[keyof typeof REPAYMENT_TYPE];
@@ -36,8 +36,8 @@ export const PAYMENT_METHOD = {
 export type PaymentMethod = typeof PAYMENT_METHOD[keyof typeof PAYMENT_METHOD];
 
 export const GUARANTOR_ROLE = {
-  WITNESS: 'WITNESS', // সাধারণ সাক্ষী (শাহেদ)
-  FINANCIAL_GUARANTOR: 'FINANCIAL_GUARANTOR', // জামিনদার (কাফিল বিল মাল)
+  WITNESS: 'WITNESS', // General witness (Shahed)
+  FINANCIAL_GUARANTOR: 'FINANCIAL_GUARANTOR', // Financial guarantor (Kafil bil-Mal)
 } as const;
 
 export type GuarantorRole = typeof GUARANTOR_ROLE[keyof typeof GUARANTOR_ROLE];
@@ -60,34 +60,34 @@ export const HARDSHIP_STATUS = {
 export type HardshipStatus = typeof HARDSHIP_STATUS[keyof typeof HARDSHIP_STATUS];
 
 export const POOL_CATEGORY = {
-  MEDICAL: 'MEDICAL', // জরুরি চিকিৎসা সহায়তা
-  EDUCATION: 'EDUCATION', // শিক্ষা কর্জ
-  BUSINESS: 'BUSINESS', // ক্ষুদ্র ব্যবসা ও স্বাবলম্বীকরণ
-  GENERAL: 'GENERAL', // সাধারণ কল্যাণমূলক কর্জ
+  MEDICAL: 'MEDICAL', // Emergency medical support
+  EDUCATION: 'EDUCATION', // Educational loan
+  BUSINESS: 'BUSINESS', // Micro-enterprise & self-reliance
+  GENERAL: 'GENERAL', // General benevolent loan
 } as const;
 
 export type PoolCategory = typeof POOL_CATEGORY[keyof typeof POOL_CATEGORY];
 
 /**
- * সুন্নাহ সম্মত ভদ্র ও সম্মানজনক রিমাইন্ডার টেমপ্লেট
+ * Sunnah-compliant gentle and respectful reminder templates
  */
 export const GENTLE_REMINDER_TEMPLATES = [
   {
     id: 'courtesy_advance',
-    title: 'কিস্তির ৩ দিন পূর্বে সৌজন্য নোটিশ',
+    title: 'Courtesy Notice (3 days prior)',
     text: (borrowerName: string, amount: number, dueDate: string) =>
-      `আসসালামু আলাইকুম ${borrowerName} ভাই/বোন। আশা করি আল্লাহর রহমতে ভালো আছেন। আপনার কর্জের একটি কিস্তি (৳${amount}) আগামী ${dueDate} তারিখে নির্ধারিত রয়েছে। আল্লাহ আপনার রিজিকে বরকত দান করুন।`,
+      `Assalamu Alaikum ${borrowerName}. May Allah bless you and your family. This is a gentle courtesy notice regarding your upcoming Qard installment (BDT ${amount}) due on ${dueDate}. May Allah grant abundance in your sustenance.`,
   },
   {
     id: 'due_date_today',
-    title: 'নির্ধারিত দিনে সম্মানজনক স্মরণিকা',
+    title: 'Respectful Notice on Due Date',
     text: (borrowerName: string, amount: number) =>
-      `আসসালামু আলাইকুম ${borrowerName} ভাই। আজ আপনার কর্জের কিস্তি (৳${amount}) পরিশোধের নির্ধারিত দিন। কোনো অসুবিধা বা বিলম্বের কারণ থাকলে অনুগ্রহ করে অ্যাপে অবকাশের আবেদন (ইনযারুল মু'সির) করতে পারেন। জাযাকাল্লাহু খাইরান।`,
+      `Assalamu Alaikum ${borrowerName}. Today is the scheduled due date for your Qard installment (BDT ${amount}). If you are experiencing any unforeseen hardship, you are warmly invited to submit a grace period request (Inzar al-Mu'sir) directly in the app. JazakAllahu Khairan.`,
   },
   {
     id: 'sunnah_hadith',
-    title: 'হাদিসের বাণী সম্বলিত বার্তা',
+    title: 'Spiritual Reminder with Prophetic Hadith',
     text: (borrowerName: string) =>
-      `আসসালামু আলাইকুম ${borrowerName} ভাই। রাসূলুল্লাহ (ﷺ) বলেছেন: "যে ব্যক্তি কোনো ঋণগ্রস্ত বা অভাবগ্রস্তকে অবকাশ দেয়, আল্লাহ তাআলা তাকে কিয়ামতের কঠিন দিনে আরশের ছায়া দান করবেন।" আপনার সুস্থতা ও সার্বিক কল্যাণ কামনা করছি।`,
+      `Assalamu Alaikum ${borrowerName}. The Messenger of Allah (ﷺ) said: "Whoever grants respite to someone in difficulty, or forgives him, Allah will shade him in His shade on the Day of Resurrection." Wishing you peace, ease, and continued well-being.`,
   },
 ];

@@ -21,21 +21,21 @@ export const IbraModal: React.FC<IbraModalProps> = ({ visible, loan, onClose }) 
     const amountToForgive = forgiveType === 'FULL' ? loan.remainingAmount : parseFloat(partialAmount);
 
     if (isNaN(amountToForgive) || amountToForgive <= 0) {
-      Alert.alert('ত্রুটি', 'সঠিক টাকার পরিমাণ লিখুন');
+      Alert.alert('Error', 'Please enter a valid amount');
       return;
     }
 
     if (amountToForgive > loan.remainingAmount) {
-      Alert.alert('ত্রুটি', 'মওকুফের পরিমাণ বকেয়ার চেয়ে বেশি হতে পারে না');
+      Alert.alert('Error', 'Forgiven amount cannot exceed remaining balance');
       return;
     }
 
     forgiveLoan(loan.id, amountToForgive);
     Alert.alert(
-      'আলহামদুলিল্লাহ! সদকাহ কবুল হোক',
-      `আল্লাহ তায়ালা আপনার এই দানকে সদকাহ হিসেবে কবুল করুন এবং এর উত্তম প্রতিদান দান করুন। ৳${amountToForgive.toLocaleString(
-        'en-IN'
-      )} টাকা ঋণ মওকুফ করা হয়েছে।`
+      'Alhamdulillah! May Allah Accept Your Charity',
+      `May Allah accept this benevolent deed as certified Sadaqah and multiply your reward. BDT ${amountToForgive.toLocaleString(
+        'en-US'
+      )} debt has been forgiven.`
     );
     onClose();
   };
@@ -45,19 +45,19 @@ export const IbraModal: React.FC<IbraModalProps> = ({ visible, loan, onClose }) 
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.title}>ঋণ মওকুফ (আল-ইব্‌রা / সদকাহ)</Text>
+            <Text style={styles.title}>Debt Forgiveness (Al-Ibra / Sadaqah)</Text>
             <TouchableOpacity onPress={onClose}>
               <Text style={styles.closeBtn}>✕</Text>
             </TouchableOpacity>
           </View>
 
-          {/* কুরআনের আয়াত কার্ড */}
+          {/* Quranic Verse Card */}
           <View style={styles.quranCard}>
             <Text style={styles.quranArabic}>
               وَإِن كَانَ ذُو عُسْرَةٍ فَنَظِرَةٌ إِلَىٰ مَيْسَرَةٍ ۚ وَأَن تَصَدَّقُوا خَيْرٌ لَّكُمْ ۖ إِن كُنتُمْ تَعْلَمُونَ
             </Text>
-            <Text style={styles.quranBangla}>
-              “আর ঋণগ্রস্ত যদি অভাবী হয়, তবে তাকে সচ্ছলতা আসা পর্যন্ত অবকাশ দাও। আর যদি তোমরা তা সদকাহ করে দাও, তবে তা তোমাদের জন্য আরও উত্তম।” (সূরা আল-বাক্বারাহ: ২৮০)
+            <Text style={styles.quranEnglish}>
+              "And if someone is in hardship, then let there be postponement until a time of ease. But if you give it from your right as charity, then it is better for you, if you only knew." (Surah Al-Baqarah: 280)
             </Text>
           </View>
 
@@ -67,7 +67,7 @@ export const IbraModal: React.FC<IbraModalProps> = ({ visible, loan, onClose }) 
               onPress={() => setForgiveType('FULL')}
             >
               <Text style={[styles.typeText, forgiveType === 'FULL' && styles.typeTextActive]}>
-                সম্পূর্ণ ঋণ মওকুফ (৳ {loan.remainingAmount.toLocaleString('en-IN')})
+                Full Debt Forgiveness (BDT {loan.remainingAmount.toLocaleString('en-US')})
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -75,36 +75,36 @@ export const IbraModal: React.FC<IbraModalProps> = ({ visible, loan, onClose }) 
               onPress={() => setForgiveType('PARTIAL')}
             >
               <Text style={[styles.typeText, forgiveType === 'PARTIAL' && styles.typeTextActive]}>
-                আংশিক ঋণ মওকুফ
+                Partial Debt Forgiveness
               </Text>
             </TouchableOpacity>
           </View>
 
           {forgiveType === 'PARTIAL' ? (
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>মওকুফকৃত টাকার পরিমাণ</Text>
+              <Text style={styles.label}>Forgiven Amount (BDT)</Text>
               <TextInput
                 style={styles.input}
                 keyboardType="numeric"
                 value={partialAmount}
                 onChangeText={setPartialAmount}
-                placeholder="টাকার পরিমাণ লিখুন"
+                placeholder="Enter amount to forgive"
                 placeholderTextColor={Colors.slate.light}
               />
             </View>
           ) : null}
 
-          <Text style={styles.label}>নিয়তের নোট বা দুআ (ঐচ্ছিক)</Text>
+          <Text style={styles.label}>Intention Note or Supplication (Optional)</Text>
           <TextInput
             style={styles.input}
-            placeholder="যেমন: একমাত্র আল্লাহর সন্তুষ্টির উদ্দেশ্যে সদকাহ করলাম"
+            placeholder="e.g. Forgiven purely for the pleasure and count of Allah"
             placeholderTextColor={Colors.slate.light}
             value={sadaqahNote}
             onChangeText={setSadaqahNote}
           />
 
           <TouchableOpacity style={styles.confirmBtn} onPress={handleConfirmIbra}>
-            <Text style={styles.confirmBtnText}>আল্লাহর সন্তুষ্টির জন্য মওকুফ করুন 🕊️</Text>
+            <Text style={styles.confirmBtnText}>Forgive for the Sake of Allah 🕊️</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     lineHeight: 22,
   },
-  quranBangla: {
+  quranEnglish: {
     fontSize: 12,
     color: '#6D28D9',
     textAlign: 'center',

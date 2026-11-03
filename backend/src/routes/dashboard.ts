@@ -13,7 +13,7 @@ dashboardRouter.get('/summary', async (c) => {
   const user = c.get('user');
   const db = getDb(c.env.DB);
 
-  // ১. দেওয়া কর্জের হিসাব
+  // 1. Calculations for lent loans (receivables)
   const lentLoans = await db.select().from(loans).where(eq(loans.lenderId, user.id)).all();
   let totalLent = 0;
   let activeGivenCount = 0;
@@ -29,7 +29,7 @@ dashboardRouter.get('/summary', async (c) => {
     }
   }
 
-  // ২. নেওয়া কর্জের হিসাব
+  // 2. Calculations for borrowed loans (liabilities)
   const borrowedLoans = await db.select().from(loans).where(eq(loans.borrowerId, user.id)).all();
   let totalBorrowed = 0;
   let activeTakenCount = 0;
@@ -48,7 +48,7 @@ dashboardRouter.get('/summary', async (c) => {
     }
   }
 
-  // ৩. সাম্প্রতিক লেনদেন
+  // 3. Recent transactions
   const recentLoans = await db
     .select({ id: loans.id })
     .from(loans)

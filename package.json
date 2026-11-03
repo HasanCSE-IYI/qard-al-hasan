@@ -2,7 +2,7 @@
   "name": "qard-al-hasan-workspace",
   "version": "1.0.0",
   "private": true,
-  "description": "কর্জ্যে হাসানাহ (Qard al-Hasan) ম্যানেজমেন্ট ইকোসিস্টেম - কমপ্লিট মোবাইল অ্যাপ ও এজ ব্যাকএন্ড",
+  "description": "Qard al-Hasan Management Ecosystem - Full-Stack Mobile App & Cloudflare Edge Backend",
   "workspaces": [
     "shared",
     "backend",

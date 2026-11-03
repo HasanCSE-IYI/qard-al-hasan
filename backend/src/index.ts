@@ -11,7 +11,7 @@ import { wasiyyahRouter } from './routes/wasiyyah';
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-// গ্লোবাল মিডলওয়্যার
+// Global middleware
 app.use('*', logger());
 app.use(
   '*',
@@ -22,11 +22,11 @@ app.use(
   })
 );
 
-// সিস্টেম হেলথ চেক
+// System health check
 app.get('/', (c) => {
   return c.json({
     status: 'online',
-    system: 'কর্জ্যে হাসানাহ (Qard al-Hasan) এজ ব্যাকএন্ড সার্ভিস',
+    system: 'Qard al-Hasan Edge Backend Service',
     version: '1.0.0',
     shariahCompliance: 'Zero-Riba Guaranteed (AAOIFI Standard 19 Compliant)',
     timestamp: new Date().toISOString(),
@@ -35,7 +35,7 @@ app.get('/', (c) => {
 
 app.get('/health', (c) => c.text('OK'));
 
-// API রাউট গ্রুপ
+// API Route Groups
 const api = app.basePath('/api/v1');
 api.route('/auth', authRouter);
 api.route('/dashboard', dashboardRouter);
@@ -44,13 +44,13 @@ api.route('/repayments', repaymentsRouter);
 api.route('/media', mediaRouter);
 api.route('/wasiyyah', wasiyyahRouter);
 
-// গ্লোবাল এরর হ্যান্ডলার
+// Global error handler
 app.onError((err, c) => {
   console.error('Unhandled System Error:', err);
   return c.json(
     {
       success: false,
-      error: 'সার্ভারে সাময়িক সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।',
+      error: 'An internal server error occurred. Please try again later.',
       detail: c.env.ENVIRONMENT === 'development' ? err.message : undefined,
     },
     500

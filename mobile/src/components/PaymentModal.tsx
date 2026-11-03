@@ -31,7 +31,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ visible, loan, onClo
   const [notes, setNotes] = useState('');
   const [smsClipboard, setSmsClipboard] = useState('');
 
-  // বিকাশ/নগদ এসএমএস পেস্ট ও অটো-পার্স হ্যান্ডলার
+  // bKash / Nagad SMS auto-parse handler
   const handleParseSms = (text: string) => {
     setSmsClipboard(text);
     if (!text.trim()) return;
@@ -46,18 +46,18 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ visible, loan, onClo
     if (parsed.method) {
       setMethod(parsed.method);
     }
-    Alert.alert('এসএমএস পার্স সফল', `টাকা: ৳${parsed.amount || 'অনির্দিষ্ট'}, TrxID: ${parsed.trxId || 'অনির্দিষ্ট'}`);
+    Alert.alert('SMS Parsed Successfully', `Amount: BDT ${parsed.amount || 'N/A'}, TrxID: ${parsed.trxId || 'N/A'}`);
   };
 
   const handlePaymentSubmit = () => {
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
-      Alert.alert('ত্রুটি', 'সঠিক টাকার পরিমাণ লিখুন');
+      Alert.alert('Error', 'Please enter a valid repayment amount');
       return;
     }
 
     if (numAmount > loan.remainingAmount) {
-      Alert.alert('ত্রুটি', `পরিশোধের পরিমাণ অবশিষ্ট বকেয়া (৳${loan.remainingAmount}) থেকে বেশি হতে পারে না`);
+      Alert.alert('Error', `Repayment cannot exceed remaining balance (BDT ${loan.remainingAmount})`);
       return;
     }
 
@@ -74,7 +74,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ visible, loan, onClo
     };
 
     addRepayment(newRepayment);
-    Alert.alert('আলহামদুলিল্লাহ', 'কিস্তি পরিশোধের রেকর্ড সফলভাবে সংরক্ষিত হয়েছে।');
+    Alert.alert('Alhamdulillah', 'Repayment record saved successfully.');
     onClose();
   };
 
@@ -83,7 +83,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ visible, loan, onClo
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.title}>কর্জ পরিশোধ এন্ট্রি</Text>
+            <Text style={styles.title}>Record Repayment</Text>
             <TouchableOpacity onPress={onClose}>
               <Text style={styles.closeBtn}>✕</Text>
             </TouchableOpacity>
@@ -91,16 +91,16 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ visible, loan, onClo
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.dueInfoBox}>
-              <Text style={styles.dueLabel}>অবশিষ্ট মোট বকেয়া:</Text>
-              <Text style={styles.dueAmount}>৳ {loan.remainingAmount.toLocaleString('en-IN')}</Text>
+              <Text style={styles.dueLabel}>Remaining Total Balance:</Text>
+              <Text style={styles.dueAmount}>BDT {loan.remainingAmount.toLocaleString('en-US')}</Text>
             </View>
 
-            {/* এসএমএস অটো-পার্সার বক্স */}
+            {/* SMS Auto-Parser Box */}
             <View style={styles.smsBox}>
-              <Text style={styles.smsBoxTitle}>📱 বিকাশ / নগদ SMS অটো-ফিল্টার</Text>
+              <Text style={styles.smsBoxTitle}>📱 bKash / Nagad SMS Auto-Parser</Text>
               <TextInput
                 style={styles.smsInput}
-                placeholder="বিকাশ বা নগদ থেকে প্রাপ্ত এসএমএস এখানে পেস্ট করুন..."
+                placeholder="Paste transaction SMS from bKash or Nagad here..."
                 placeholderTextColor={Colors.slate.light}
                 value={smsClipboard}
                 onChangeText={handleParseSms}
@@ -108,14 +108,14 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ visible, loan, onClo
               />
             </View>
 
-            {/* পেমেন্ট মেথড সিলেক্টর */}
-            <Text style={styles.label}>পেমেন্ট মাধ্যম</Text>
+            {/* Payment Method Selector */}
+            <Text style={styles.label}>Payment Method</Text>
             <View style={styles.methodsRow}>
               {[
-                { id: PAYMENT_METHOD.BKASH, label: 'বিকাশ' },
-                { id: PAYMENT_METHOD.NAGAD, label: 'নগদ' },
-                { id: PAYMENT_METHOD.BANK_TRANSFER, label: 'ব্যাংক' },
-                { id: PAYMENT_METHOD.CASH, label: 'ক্যাশ' },
+                { id: PAYMENT_METHOD.BKASH, label: 'bKash' },
+                { id: PAYMENT_METHOD.NAGAD, label: 'Nagad' },
+                { id: PAYMENT_METHOD.BANK_TRANSFER, label: 'Bank' },
+                { id: PAYMENT_METHOD.CASH, label: 'Cash' },
               ].map((m) => (
                 <TouchableOpacity
                   key={m.id}
@@ -129,40 +129,40 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ visible, loan, onClo
               ))}
             </View>
 
-            {/* অ্যামাউন্ট ইনপুট */}
-            <Text style={styles.label}>পরিশোধকৃত টাকার পরিমাণ (টাকা)</Text>
+            {/* Amount Input */}
+            <Text style={styles.label}>Repayment Amount (BDT)</Text>
             <TextInput
               style={styles.input}
               keyboardType="numeric"
-              placeholder="টাকার পরিমাণ লিখুন"
+              placeholder="Enter repayment amount"
               placeholderTextColor={Colors.slate.light}
               value={amount}
               onChangeText={setAmount}
             />
 
-            {/* TrxID ইনপুট */}
-            <Text style={styles.label}>ট্রানজ্যাকশন আইডি (TrxID / স্লিপ নম্বর)</Text>
+            {/* TrxID Input */}
+            <Text style={styles.label}>Transaction ID (TrxID / Receipt No)</Text>
             <TextInput
               style={styles.input}
-              placeholder="যেমন: 9B8A7C6D (যদি থাকে)"
+              placeholder="e.g. 9B8A7C6D (if available)"
               placeholderTextColor={Colors.slate.light}
               value={trxId}
               onChangeText={setTrxId}
               autoCapitalize="characters"
             />
 
-            {/* নোট */}
-            <Text style={styles.label}>মন্তব্য বা নোট (ঐচ্ছিক)</Text>
+            {/* Notes */}
+            <Text style={styles.label}>Notes or Memo (Optional)</Text>
             <TextInput
               style={styles.input}
-              placeholder="যেমন: নভেম্বর মাসের কিস্তি"
+              placeholder="e.g. November installment payment"
               placeholderTextColor={Colors.slate.light}
               value={notes}
               onChangeText={setNotes}
             />
 
             <TouchableOpacity style={styles.submitBtn} onPress={handlePaymentSubmit}>
-              <Text style={styles.submitBtnText}>পরিশোধ নিশ্চিত করুন 🤲</Text>
+              <Text style={styles.submitBtnText}>Confirm Repayment 🤲</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

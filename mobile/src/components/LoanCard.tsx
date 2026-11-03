@@ -16,24 +16,24 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onPress, onReminderPre
 
   const isLender = loan.lenderId === user?.id;
   const counterpartyName = isLender ? loan.borrowerName : loan.lenderName;
-  const roleLabel = isLender ? 'কর্জ গ্রহীতা' : 'কর্জ দাতা';
+  const roleLabel = isLender ? 'Borrower' : 'Lender';
 
   const paidAmount = loan.principalAmount - loan.remainingAmount;
   const progressRatio = Math.min(1, Math.max(0, paidAmount / (loan.principalAmount || 1)));
 
-  // স্ট্যাটাস ও কালার
+  // Status badges and colors
   const getStatusBadge = () => {
     switch (loan.status) {
       case LOAN_STATUS.PAID_IN_FULL:
-        return { label: 'পরিশোধিত', bg: '#D1FAE5', text: '#065F46' };
+        return { label: 'Fully Paid', bg: '#D1FAE5', text: '#065F46' };
       case LOAN_STATUS.FORGIVEN_IBRA:
-        return { label: 'সদকাহ (মওকুফ)', bg: '#EDE9FE', text: '#5B21B6' };
+        return { label: 'Sadaqah (Forgiven)', bg: '#EDE9FE', text: '#5B21B6' };
       case LOAN_STATUS.HARDSHIP_REVIEW:
-        return { label: 'অবকাশ আবেদন', bg: '#FCE7F3', text: '#9D174D' };
+        return { label: 'Grace Requested', bg: '#FCE7F3', text: '#9D174D' };
       case LOAN_STATUS.PARTIALLY_PAID:
-        return { label: 'চলমান কিস্তি', bg: '#FEF3C7', text: '#92400E' };
+        return { label: 'Partially Paid', bg: '#FEF3C7', text: '#92400E' };
       default:
-        return { label: 'সক্রিয় কর্জ', bg: '#E0F2FE', text: '#0369A1' };
+        return { label: 'Active Qard', bg: '#E0F2FE', text: '#0369A1' };
     }
   };
 
@@ -44,7 +44,7 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onPress, onReminderPre
       <View style={styles.header}>
         <View>
           <Text style={styles.roleLabel}>{roleLabel}</Text>
-          <Text style={styles.name}>{counterpartyName || 'নাম উল্লেখ নেই'}</Text>
+          <Text style={styles.name}>{counterpartyName || 'Unnamed counterparty'}</Text>
         </View>
         <View style={[styles.badge, { backgroundColor: badge.bg }]}>
           <Text style={[styles.badgeText, { color: badge.text }]}>{badge.label}</Text>
@@ -52,29 +52,29 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onPress, onReminderPre
       </View>
 
       <Text style={styles.purpose} numberOfLines={1}>
-        উদ্দেশ্য: {loan.purpose}
+        Purpose: {loan.purpose}
       </Text>
 
-      {/* অগ্রগতি বার */}
+      {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBarBg}>
           <View style={[styles.progressBarFill, { width: `${progressRatio * 100}%` }]} />
         </View>
         <View style={styles.progressLabels}>
           <Text style={styles.subtext}>
-            পরিশোধ: {isPrivacyMode ? '••••' : `৳ ${paidAmount.toLocaleString('en-IN')}`}
+            Paid: {isPrivacyMode ? '••••' : `BDT ${paidAmount.toLocaleString('en-US')}`}
           </Text>
           <Text style={styles.subtext}>
-            বাকি: {isPrivacyMode ? '••••' : `৳ ${loan.remainingAmount.toLocaleString('en-IN')}`}
+            Remaining: {isPrivacyMode ? '••••' : `BDT ${loan.remainingAmount.toLocaleString('en-US')}`}
           </Text>
         </View>
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.dueDate}>পরিশোধের তারিখ: {loan.dueDate}</Text>
+        <Text style={styles.dueDate}>Due Date: {loan.dueDate}</Text>
         {isLender && loan.remainingAmount > 0 && onReminderPress ? (
           <TouchableOpacity style={styles.reminderBtn} onPress={onReminderPress}>
-            <Text style={styles.reminderBtnText}>ভদ্র স্মরণিকা 💬</Text>
+            <Text style={styles.reminderBtnText}>Gentle Reminder 💬</Text>
           </TouchableOpacity>
         ) : null}
       </View>

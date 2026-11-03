@@ -70,7 +70,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>{renderScreen()}</View>
 
-      {/* বটম নেভিগেশন বার */}
+      {/* Bottom Navigation Bar */}
       <View style={styles.bottomNav}>
         <TouchableOpacity
           style={styles.navItem}
@@ -80,7 +80,7 @@ export default function App() {
             🏠
           </Text>
           <Text style={[styles.navLabel, currentScreen === 'dashboard' && styles.navLabelActive]}>
-            হোম
+            Home
           </Text>
         </TouchableOpacity>
 
@@ -92,7 +92,7 @@ export default function App() {
             📋
           </Text>
           <Text style={[styles.navLabel, currentScreen === 'loans' && styles.navLabelActive]}>
-            কর্জের খাতা
+            Loans
           </Text>
         </TouchableOpacity>
 
@@ -103,7 +103,7 @@ export default function App() {
           <View style={styles.fabCircle}>
             <Text style={styles.fabText}>+</Text>
           </View>
-          <Text style={styles.navLabel}>কর্জ দিন</Text>
+          <Text style={styles.navLabel}>New Loan</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -114,7 +114,7 @@ export default function App() {
             📜
           </Text>
           <Text style={[styles.navLabel, currentScreen === 'wasiyyah' && styles.navLabelActive]}>
-            অসিয়তনামা
+            Wasiyyah
           </Text>
         </TouchableOpacity>
       </View>

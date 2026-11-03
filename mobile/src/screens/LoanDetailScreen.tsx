@@ -26,7 +26,7 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
   const loans = useAppStore((state) => state.loans);
   const grantHardshipExtension = useAppStore((state) => state.grantHardshipExtension);
 
-  // লাইভ স্টেট থেকে লোনের আপডেটেড ডাটা রিড
+  // Read updated loan record from live state
   const loan = loans.find((l) => l.id === initialLoan.id) || initialLoan;
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -42,16 +42,16 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
   const handleGrantHardship = () => {
     Alert.prompt
       ? Alert.prompt(
-          'অবকাশ (Inzar al-Mu\'sir) মঞ্জুর',
-          'নতুন পরিশোধের তারিখ লিখুন (YYYY-MM-DD):',
+          'Grant Grace Period (Inzar)',
+          'Enter new due date (YYYY-MM-DD):',
           [
-            { text: 'বাতিল', style: 'cancel' },
+            { text: 'Cancel', style: 'cancel' },
             {
-              text: 'মঞ্জুর করুন',
+              text: 'Grant',
               onPress: (newDate?: string) => {
                 if (newDate && newDate.trim()) {
                   grantHardshipExtension(loan.id, newDate.trim());
-                  Alert.alert('সফল', `পরিশোধের মেয়াদ ${newDate} পর্যন্ত বৃদ্ধি করা হয়েছে।`);
+                  Alert.alert('Success', `Due date extended until ${newDate}.`);
                 }
               },
             },
@@ -59,50 +59,50 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
           'plain-text',
           '2027-01-31'
         )
-      : Alert.alert('অবকাশ মঞ্জুর', 'মেয়াদ বৃদ্ধি করা হয়েছে।');
+      : Alert.alert('Grace Period Granted', 'Loan term has been extended.');
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={onBack}>
-          <Text style={styles.backBtnText}>‹ ফিরে যান</Text>
+          <Text style={styles.backBtnText}>‹ Back</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>কর্জের বিস্তারিত বিবরণ</Text>
+        <Text style={styles.headerTitle}>Loan Details</Text>
         <TouchableOpacity onPress={() => setShowAqdModal(true)}>
-          <Text style={styles.aqdIcon}>📄 চুক্তি</Text>
+          <Text style={styles.aqdIcon}>📄 Contract</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        {/* টপ কার্ড */}
+        {/* Top Hero Card */}
         <View style={styles.heroCard}>
-          <Text style={styles.heroRole}>{isLender ? 'কর্জ গ্রহীতা' : 'কর্জ দাতা'}</Text>
+          <Text style={styles.heroRole}>{isLender ? 'Borrower' : 'Lender'}</Text>
           <Text style={styles.heroName}>{isLender ? loan.borrowerName : loan.lenderName}</Text>
-          <Text style={styles.heroPurpose}>উদ্দেশ্য: {loan.purpose}</Text>
+          <Text style={styles.heroPurpose}>Purpose: {loan.purpose}</Text>
 
           <View style={styles.heroAmountsRow}>
             <View>
-              <Text style={styles.heroLabel}>মূল কর্জ</Text>
-              <Text style={styles.heroVal}>৳ {loan.principalAmount.toLocaleString('en-IN')}</Text>
+              <Text style={styles.heroLabel}>Principal Loan</Text>
+              <Text style={styles.heroVal}>BDT {loan.principalAmount.toLocaleString('en-US')}</Text>
             </View>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={styles.heroLabel}>অবশিষ্ট বাকি</Text>
+              <Text style={styles.heroLabel}>Remaining Balance</Text>
               <Text style={[styles.heroVal, styles.remainingVal]}>
-                ৳ {loan.remainingAmount.toLocaleString('en-IN')}
+                BDT {loan.remainingAmount.toLocaleString('en-US')}
               </Text>
             </View>
           </View>
 
-          {/* প্রগ্রেস বার */}
+          {/* Progress Bar */}
           <View style={styles.progressBarBg}>
             <View style={[styles.progressBarFill, { width: `${progressPercent}%` }]} />
           </View>
-          <Text style={styles.progressText}>{progressPercent}% মূলধন পরিশোধিত</Text>
+          <Text style={styles.progressText}>{progressPercent}% principal repaid</Text>
         </View>
 
-        {/* জরুরি অ্যাকশনসমূহ */}
-        <Text style={styles.sectionHeading}>জরুরি সেবা ও শরীয়াহ অ্যাকশন</Text>
+        {/* Priority Actions & Shariah Options */}
+        <Text style={styles.sectionHeading}>Services & Shariah Actions</Text>
         <View style={styles.actionGrid}>
           {loan.remainingAmount > 0 ? (
             <TouchableOpacity
@@ -111,9 +111,9 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
             >
               <Text style={styles.actionCardIcon}>💳</Text>
               <Text style={[styles.actionCardTitle, { color: Colors.primary.dark }]}>
-                কিস্তি পরিশোধ এন্ট্রি
+                Record Repayment
               </Text>
-              <Text style={styles.actionCardSub}>বিকাশ/নগদ/ক্যাশ জমা দিন</Text>
+              <Text style={styles.actionCardSub}>Log bKash / Nagad / Cash payment</Text>
             </TouchableOpacity>
           ) : null}
 
@@ -122,8 +122,8 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
             onPress={() => setShowAqdModal(true)}
           >
             <Text style={styles.actionCardIcon}>📜</Text>
-            <Text style={[styles.actionCardTitle, { color: Colors.slate.darkest }]}>ডিজিটাল চুক্তিপত্র</Text>
-            <Text style={styles.actionCardSub}>সূরা বাক্বারাহ ২৮২ সনদ</Text>
+            <Text style={[styles.actionCardTitle, { color: Colors.slate.darkest }]}>Digital Aqd Contract</Text>
+            <Text style={styles.actionCardSub}>Surah Al-Baqarah 282 deed</Text>
           </TouchableOpacity>
 
           {isLender && loan.remainingAmount > 0 ? (
@@ -132,8 +132,8 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
               onPress={() => setShowIbraModal(true)}
             >
               <Text style={styles.actionCardIcon}>🤲</Text>
-              <Text style={[styles.actionCardTitle, { color: '#6D28D9' }]}>ঋণ মওকুফ (সদকাহ)</Text>
-              <Text style={styles.actionCardSub}>আল্লাহর সন্তুষ্টিতে মাফ</Text>
+              <Text style={[styles.actionCardTitle, { color: '#6D28D9' }]}>Debt Forgiveness (Sadaqah)</Text>
+              <Text style={styles.actionCardSub}>Forgive for the pleasure of Allah</Text>
             </TouchableOpacity>
           ) : null}
 
@@ -143,8 +143,8 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
               onPress={() => setShowReminderModal(true)}
             >
               <Text style={styles.actionCardIcon}>💬</Text>
-              <Text style={[styles.actionCardTitle, { color: '#047857' }]}>ভদ্র স্মরণিকা</Text>
-              <Text style={styles.actionCardSub}>সুন্নাহসম্মত রিমাইন্ডার</Text>
+              <Text style={[styles.actionCardTitle, { color: '#047857' }]}>Gentle Reminder</Text>
+              <Text style={styles.actionCardSub}>Sunnah-compliant notification</Text>
             </TouchableOpacity>
           ) : null}
 
@@ -154,43 +154,43 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
               onPress={handleGrantHardship}
             >
               <Text style={styles.actionCardIcon}>⏳</Text>
-              <Text style={[styles.actionCardTitle, { color: '#B45309' }]}>অবকাশ মঞ্জুর (ইনযার)</Text>
-              <Text style={styles.actionCardSub}>সংকটাপন্নকে সময় বৃদ্ধি</Text>
+              <Text style={[styles.actionCardTitle, { color: '#B45309' }]}>Grant Grace Period (Inzar)</Text>
+              <Text style={styles.actionCardSub}>Extend term without penalty</Text>
             </TouchableOpacity>
           )}
         </View>
 
-        {/* শর্তাবলি ও তারিখ */}
-        <Text style={styles.sectionHeading}>চুক্তির শর্তাবলি</Text>
+        {/* Contract Terms */}
+        <Text style={styles.sectionHeading}>Contract Terms & Conditions</Text>
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
-            <Text style={styles.infoKey}>শুরুর তারিখ:</Text>
+            <Text style={styles.infoKey}>Start Date:</Text>
             <Text style={styles.infoVal}>{loan.startDate}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoKey}>পরিশোধের শেষ মেয়াদ:</Text>
+            <Text style={styles.infoKey}>Final Due Date:</Text>
             <Text style={[styles.infoVal, { color: Colors.accent.gold, fontWeight: '700' }]}>
               {loan.dueDate}
             </Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoKey}>পরিশোধ কাঠামো:</Text>
+            <Text style={styles.infoKey}>Repayment Structure:</Text>
             <Text style={styles.infoVal}>
               {loan.repaymentType === 'MONTHLY_INSTALLMENT'
-                ? `মাসিক কিস্তি (৳${loan.installmentAmount} করে)`
-                : 'এককালীন পরিশোধ'}
+                ? `Monthly installments (BDT ${loan.installmentAmount} / term)`
+                : 'Lump-sum repayment'}
             </Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoKey}>সুদের হার:</Text>
+            <Text style={styles.infoKey}>Interest Rate (Riba):</Text>
             <Text style={[styles.infoVal, { color: Colors.primary.main, fontWeight: '700' }]}>
-              ০.০% (শতভাগ সুদ ও রিবা-মুক্ত)
+              0.0% (100% Zero-Riba)
             </Text>
           </View>
         </View>
       </ScrollView>
 
-      {/* মডালসমূহ */}
+      {/* Modals */}
       {showPaymentModal ? (
         <PaymentModal visible={showPaymentModal} loan={loan} onClose={() => setShowPaymentModal(false)} />
       ) : null}

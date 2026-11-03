@@ -9,7 +9,7 @@ export const loansRouter = new Hono<{ Bindings: Bindings; Variables: { user: Aut
 
 loansRouter.use('*', authMiddleware);
 
-// লোন তালিকা দেখা
+// List loans for current user
 loansRouter.get('/', async (c) => {
   const user = c.get('user');
   const type = c.req.query('type'); // 'lent' | 'borrowed' | 'all'
@@ -32,7 +32,7 @@ loansRouter.get('/', async (c) => {
   return c.json({ success: true, data: list });
 });
 
-// নির্দিষ্ট লোনের বিস্তারিত তথ্য
+// Get loan details by ID
 loansRouter.get('/:id', async (c) => {
   const user = c.get('user');
   const loanId = c.req.param('id');
@@ -40,11 +40,11 @@ loansRouter.get('/:id', async (c) => {
 
   const loan = await db.select().from(loans).where(eq(loans.id, loanId)).get();
   if (!loan) {
-    return c.json({ success: false, error: 'কর্জের রেকর্ড পাওয়া যায়নি' }, 404);
+    return c.json({ success: false, error: 'Loan record not found' }, 404);
   }
 
   if (loan.lenderId !== user.id && loan.borrowerId !== user.id) {
-    return c.json({ success: false, error: 'এই রেকর্ড দেখার অনুমতি নেই' }, 403);
+    return c.json({ success: false, error: 'Unauthorized to view this record' }, 403);
   }
 
   const lender = await db.select().from(users).where(eq(users.id, loan.lenderId)).get();
@@ -70,7 +70,7 @@ loansRouter.get('/:id', async (c) => {
   });
 });
 
-// নতুন কর্জে হাসানাহ তৈরি
+// Create new Qard al-Hasan loan
 loansRouter.post('/', async (c) => {
   const user = c.get('user');
   const body = await c.req.json();
@@ -83,7 +83,7 @@ loansRouter.post('/', async (c) => {
   const now = new Date().toISOString();
   const data = parsed.data;
 
-  // ঋণগ্রহীতার প্রোফাইল খোঁজা বা তৈরি
+  // Lookup or create borrower profile
   let borrower = await db.select().from(users).where(eq(users.phone, data.borrowerPhone)).get();
   if (!borrower) {
     const newBorrowerId = crypto.randomUUID();
@@ -103,13 +103,13 @@ loansRouter.post('/', async (c) => {
   const loanId = crypto.randomUUID();
   const contractContent = `QARD-${loanId}-${user.id}-${borrower!.id}-${data.principalAmount}-${data.startDate}-${data.dueDate}`;
   
-  // SHA-256 ভেরিফিকেশন হ্যাশ
+  // Compute SHA-256 integrity verification hash
   const msgUint8 = new TextEncoder().encode(contractContent);
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const contractHash = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 
-  // অ্যাটমিক ট্রানজ্যাকশন
+  // Atomic batch execution
   await db.batch([
     db.insert(loans).values({
       id: loanId,
@@ -141,7 +141,7 @@ loansRouter.post('/', async (c) => {
     }),
   ]);
 
-  // সাক্ষী/জামিনদার যুক্ত করা (যদি থাকে)
+  // Attach witnesses / guarantors if provided
   if (data.guarantors && data.guarantors.length > 0) {
     for (const g of data.guarantors) {
       await db.insert(guarantors).values({
@@ -159,7 +159,7 @@ loansRouter.post('/', async (c) => {
   return c.json({ success: true, data: createdLoan }, 201);
 });
 
-// ডিজিটাল সাইন ও অনুমোদন
+// Digital signature and mutual approval
 loansRouter.post('/:id/sign', async (c) => {
   const user = c.get('user');
   const loanId = c.req.param('id');
@@ -168,7 +168,7 @@ loansRouter.post('/:id/sign', async (c) => {
 
   const loan = await db.select().from(loans).where(eq(loans.id, loanId)).get();
   if (!loan) {
-    return c.json({ success: false, error: 'কর্জের রেকর্ড পাওয়া যায়নি' }, 404);
+    return c.json({ success: false, error: 'Loan record not found' }, 404);
   }
 
   let updateFields: Partial<typeof loans.$inferInsert> = { updatedAt: now };
@@ -179,7 +179,7 @@ loansRouter.post('/:id/sign', async (c) => {
   } else if (loan.lenderId === user.id) {
     updateFields.lenderSignedAt = now;
   } else {
-    return c.json({ success: false, error: 'আপনার এই চুক্তি স্বাক্ষরের অনুমতি নেই' }, 403);
+    return c.json({ success: false, error: 'Unauthorized to sign this contract' }, 403);
   }
 
   await db.batch([
@@ -198,7 +198,7 @@ loansRouter.post('/:id/sign', async (c) => {
   return c.json({ success: true, data: updated });
 });
 
-// সংকটাপন্ন অবকাশের আবেদন (Inzar al-Mu'sir)
+// Grace Period / Hardship Request (Inzar al-Mu'sir)
 loansRouter.post('/:id/hardship', async (c) => {
   const user = c.get('user');
   const loanId = c.req.param('id');
@@ -211,7 +211,7 @@ loansRouter.post('/:id/hardship', async (c) => {
   const db = getDb(c.env.DB);
   const loan = await db.select().from(loans).where(eq(loans.id, loanId)).get();
   if (!loan || loan.borrowerId !== user.id) {
-    return c.json({ success: false, error: 'কেবল ঋণগ্রহীতা অবকাশের আবেদন করতে পারবেন' }, 403);
+    return c.json({ success: false, error: 'Only the borrower can request a grace period' }, 403);
   }
 
   const now = new Date().toISOString();
@@ -239,10 +239,10 @@ loansRouter.post('/:id/hardship', async (c) => {
     }),
   ]);
 
-  return c.json({ success: true, message: 'অবকাশের আবেদন সফলভাবে জমা হয়েছে' });
+  return c.json({ success: true, message: 'Grace period request submitted successfully' });
 });
 
-// ঋণ মওকুফ (Ibra - সম্পূর্ণ বা আংশিক সদকাহ)
+// Debt Forgiveness (Al-Ibra / Voluntary Charity)
 loansRouter.post('/:id/forgive', async (c) => {
   const user = c.get('user');
   const loanId = c.req.param('id');
@@ -255,7 +255,7 @@ loansRouter.post('/:id/forgive', async (c) => {
   const db = getDb(c.env.DB);
   const loan = await db.select().from(loans).where(eq(loans.id, loanId)).get();
   if (!loan || loan.lenderId !== user.id) {
-    return c.json({ success: false, error: 'কেবল ঋণদাতা ঋণ মওকুফ করতে পারবেন' }, 403);
+    return c.json({ success: false, error: 'Only the lender can forgive this loan' }, 403);
   }
 
   const now = new Date().toISOString();
@@ -277,7 +277,7 @@ loansRouter.post('/:id/forgive', async (c) => {
 
   return c.json({
     success: true,
-    message: 'ঋণ সফলভাবে আল্লাহর সন্তুষ্টির জন্য সদকাহ হিসেবে মওকুফ করা হয়েছে',
+    message: 'Loan forgiven successfully as voluntary charity (Al-Ibra) for the sake of Allah',
     data: { newRemaining, status: newStatus },
   });
 });

@@ -9,7 +9,7 @@ import {
   PAYMENT_METHOD,
 } from '@qard/shared';
 
-const API_BASE_URL = 'http://127.0.0.1:8787/api/v1'; // লোকাল ক্লাউডফ্লেয়ার ওয়ার্কার বা রিমোট ডোমেইন
+const API_BASE_URL = 'http://127.0.0.1:8787/api/v1'; // Local Cloudflare Worker or remote domain
 
 let authToken: string | null = null;
 
@@ -41,11 +41,11 @@ export const ApiClient = {
       return data;
     } catch (err: any) {
       console.warn('Network request failed, falling back to local state:', err.message);
-      return { success: false, error: 'সার্ভারে সংযোগ করা যাচ্ছে না' };
+      return { success: false, error: 'Unable to connect to server' };
     }
   },
 
-  // অথেনটিকেশন
+  // Authentication
   async requestOtp(phone: string) {
     return this.request<{ message: string; devOtp?: string }>('/auth/request-otp', {
       method: 'POST',
@@ -64,12 +64,12 @@ export const ApiClient = {
     return res;
   },
 
-  // ড্যাশবোর্ড সামারি
+  // Dashboard summary
   async getDashboardSummary() {
     return this.request<DashboardSummary>('/dashboard/summary');
   },
 
-  // লোন তালিকা ও বিস্তারিত
+  // Loan queries and operations
   async getLoans(type: 'all' | 'lent' | 'borrowed' = 'all') {
     return this.request<Loan[]>(`/loans?type=${type}`);
   },
@@ -105,7 +105,7 @@ export const ApiClient = {
     });
   },
 
-  // পেমেন্ট রিপেমেন্ট
+  // Repayment tracking
   async createRepayment(payload: any) {
     return this.request<Repayment>('/repayments', {
       method: 'POST',
@@ -120,7 +120,7 @@ export const ApiClient = {
     });
   },
 
-  // অসিয়তনামা
+  // Al-Wasiyyah statement
   async getWasiyyahStatement() {
     return this.request<WasiyyahReport>('/wasiyyah/statement');
   },

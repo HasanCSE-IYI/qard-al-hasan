@@ -4,7 +4,7 @@ import { authMiddleware, AuthUser } from '../middleware/auth';
 
 export const mediaRouter = new Hono<{ Bindings: Bindings; Variables: { user: AuthUser } }>();
 
-// রসিদ বা ডকুমেন্ট আপলোড (Cloudflare R2)
+// Upload receipt or contract document (Cloudflare R2)
 mediaRouter.post('/upload', authMiddleware, async (c) => {
   const user = c.get('user');
   const contentType = c.req.header('Content-Type') || 'image/webp';
@@ -14,15 +14,15 @@ mediaRouter.post('/upload', authMiddleware, async (c) => {
   const body = await c.req.arrayBuffer();
 
   if (body.byteLength === 0) {
-    return c.json({ success: false, error: 'ফাইল পাওয়া যায়নি' }, 400);
+    return c.json({ success: false, error: 'No file payload provided' }, 400);
   }
 
-  // সর্বোচ্চ ৩ এমবি সাইজ লিমিট
+  // Maximum 3 MB size limit
   if (body.byteLength > 3 * 1024 * 1024) {
-    return c.json({ success: false, error: 'ফাইলের আকার সর্বোচ্চ ৩ মেগাবাইট অনুমোদিত' }, 400);
+    return c.json({ success: false, error: 'File size exceeds maximum allowed limit of 3MB' }, 400);
   }
 
-  // Cloudflare R2-তে সেভ
+  // Store into Cloudflare R2
   await c.env.MEDIA_BUCKET.put(key, body, {
     httpMetadata: {
       contentType,
@@ -41,13 +41,13 @@ mediaRouter.post('/upload', authMiddleware, async (c) => {
   });
 });
 
-// ফাইল ভিউ ও স্ট্রিমিং
+// View and stream file
 mediaRouter.get('/:key{.*}', async (c) => {
   const key = c.req.param('key');
   const object = await c.env.MEDIA_BUCKET.get(key);
 
   if (!object) {
-    return c.json({ success: false, error: 'ফাইল পাওয়া যায়নি' }, 404);
+    return c.json({ success: false, error: 'File not found' }, 404);
   }
 
   const headers = new Headers();

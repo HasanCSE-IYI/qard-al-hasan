@@ -11,7 +11,7 @@ export interface AuthUser {
 export async function authMiddleware(c: Context<{ Bindings: Bindings; Variables: { user: AuthUser } }>, next: Next) {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return c.json({ success: false, error: 'অননুমোদিত প্রবেশাধিকার (Unauthorized)' }, 401);
+    return c.json({ success: false, error: 'Unauthorized access' }, 401);
   }
 
   const token = authHeader.substring(7);
@@ -26,6 +26,6 @@ export async function authMiddleware(c: Context<{ Bindings: Bindings; Variables:
     });
     await next();
   } catch (err) {
-    return c.json({ success: false, error: 'টোকেন মেয়াদোত্তীর্ণ বা অকার্যকর' }, 401);
+    return c.json({ success: false, error: 'Token expired or invalid' }, 401);
   }
 }

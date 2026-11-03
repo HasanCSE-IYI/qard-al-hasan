@@ -5,12 +5,12 @@ import path from 'node:path';
 
 /**
  * Cloudflare D1 Database Shim backed by Node.js 24 native SQLite (node:sqlite)
- * PRoot/Container পরিবেশে workerd এর মেমরি সীমাবদ্ধতা ছাড়াই ১০০% ডাবল-এন্ট্রি এবং D1 API সাপোর্ট করে
+ * Full double-entry and D1 API compatibility without external workerd dependencies
  */
 export function createLocalD1(dbFilePath: string = ':memory:'): D1Database {
   const db = new DatabaseSync(dbFilePath);
 
-  // WAL মোড ও ফরেন কি সক্রিয়করণ
+  // Enable WAL mode and foreign keys
   db.exec('PRAGMA foreign_keys = ON;');
 
   return {

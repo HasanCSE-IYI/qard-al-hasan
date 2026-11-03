@@ -19,13 +19,13 @@ export const WasiyyahScreen: React.FC<WasiyyahScreenProps> = ({ onBack }) => {
   const user = useAppStore((state) => state.user);
   const loans = useAppStore((state) => state.loans);
 
-  // ১. যা আমি পাব (Receivables)
+  // 1. Receivables: Loans given to others
   const receivables = loans.filter(
     (l) => l.lenderId === user?.id && l.remainingAmount > 0
   );
   const totalReceivables = receivables.reduce((sum, l) => sum + l.remainingAmount, 0);
 
-  // ২. যা আমার কাছে অন্যরা পাবে (Payables)
+  // 2. Payables: Debts owed to others
   const payables = loans.filter(
     (l) => l.borrowerId === user?.id && l.remainingAmount > 0
   );
@@ -37,90 +37,92 @@ export const WasiyyahScreen: React.FC<WasiyyahScreenProps> = ({ onBack }) => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={onBack}>
-          <Text style={styles.backBtnText}>‹ ড্যাশবোর্ড</Text>
+          <Text style={styles.backBtnText}>‹ Dashboard</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>আল-ওয়াসিয়্যাহ (অসিয়তনামা)</Text>
+        <Text style={styles.headerTitle}>Al-Wasiyyah (Islamic Will)</Text>
         <View style={{ width: 50 }} />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        {/* হাদিস কার্ড */}
+        {/* Prophetic Hadith Card */}
         <View style={styles.hadithCard}>
           <Text style={styles.hadithArabic}>
             مَا حَقُّ امْرِئٍ مُسْلِمٍ لَهُ شَيْءٌ يُوصِي فِيهِ يَبِيتُ لَيْلَتَيْنِ إِلَّا وَوَصِيَّتُهُ مَكْتُوبَةٌ عِنْدَهُ
           </Text>
-          <Text style={styles.hadithBangla}>
-            “যে মুসলিমের কোনো অসিয়ত করার মতো বিষয় রয়েছে, তার জন্য দুই রাত কাটানো সঙ্গত নয় এমন অবস্থায় যে তার অসিয়তনামা তার কাছে লিখিত নেই।” (সহীহ বুখারী: ২৭৩৮)
+          <Text style={styles.hadithEnglish}>
+            "It is not permissible for any Muslim who has something to will to stay for two nights without having his will written with him." (Sahih al-Bukhari: 2738)
           </Text>
         </View>
 
-        {/* নেট ব্যালেন্স কার্ড */}
+        {/* Balance Overview Card */}
         <View style={styles.balanceCard}>
-          <Text style={styles.balanceTitle}>উত্তরাধিকারীদের জন্য দেনা-পাওনা বিবরণী</Text>
+          <Text style={styles.balanceTitle}>Certified Debt Statement for Heirs & Estate</Text>
           <View style={styles.balanceRow}>
             <View>
-              <Text style={styles.balanceLabel}>মোট দেনা (পরিশোধ ফরজ)</Text>
+              <Text style={styles.balanceLabel}>Total Liabilities (Must be settled first)</Text>
               <Text style={[styles.balanceAmount, { color: '#EF4444' }]}>
-                ৳ {totalPayables.toLocaleString('en-IN')}
+                BDT {totalPayables.toLocaleString('en-US')}
               </Text>
             </View>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={styles.balanceLabel}>মোট পাওনা (ওয়ারিশদের প্রাপ্য)</Text>
+              <Text style={styles.balanceLabel}>Total Receivables (Claimable by heirs)</Text>
               <Text style={[styles.balanceAmount, { color: Colors.primary.main }]}>
-                ৳ {totalReceivables.toLocaleString('en-IN')}
+                BDT {totalReceivables.toLocaleString('en-US')}
               </Text>
             </View>
           </View>
           <View style={styles.netBox}>
-            <Text style={styles.netLabel}>নিট উদ্বৃত্ত:</Text>
+            <Text style={styles.netLabel}>Net Balance:</Text>
             <Text style={styles.netVal}>
-              {netBalance >= 0 ? `+৳ ${netBalance.toLocaleString('en-IN')}` : `-৳ ${Math.abs(netBalance).toLocaleString('en-IN')}`}
+              {netBalance >= 0
+                ? `+BDT ${netBalance.toLocaleString('en-US')}`
+                : `-BDT ${Math.abs(netBalance).toLocaleString('en-US')}`}
             </Text>
           </View>
         </View>
 
-        {/* দেনার তালিকা (মৃত্যুর পর সর্বপ্রথম যা পরিশোধ করা ওয়াজিব) */}
+        {/* Payables (Priority Estate Settlement) */}
         <Text style={styles.sectionHeading}>
-          ⚠️ আমার ঋণ বা দেনা (যা মৃত্যুর পর ত্যাজ্য সম্পত্তি থেকে সর্বপ্রথম পরিশোধ করতে হবে):
+          ⚠️ My Debts / Payables (Mandatory priority settlement from estate prior to inheritance distribution):
         </Text>
         {payables.length === 0 ? (
           <View style={styles.emptyBox}>
-            <Text style={styles.emptyText}>আলহামদুলিল্লাহ! আপনার কোনো বকেয়া দেনা নেই।</Text>
+            <Text style={styles.emptyText}>Alhamdulillah! You have no outstanding debt liabilities.</Text>
           </View>
         ) : (
           payables.map((p) => (
             <View key={p.id} style={[styles.itemCard, { borderLeftColor: '#EF4444' }]}>
               <View style={styles.itemHeader}>
-                <Text style={styles.itemName}>{p.lenderName || 'পাওনাদার'}</Text>
+                <Text style={styles.itemName}>{p.lenderName || 'Creditor'}</Text>
                 <Text style={[styles.itemAmount, { color: '#EF4444' }]}>
-                  ৳ {p.remainingAmount.toLocaleString('en-IN')}
+                  BDT {p.remainingAmount.toLocaleString('en-US')}
                 </Text>
               </View>
-              <Text style={styles.itemSub}>উদ্দেশ্য: {p.purpose}</Text>
-              <Text style={styles.itemSub}>পরিশোধের নির্ধারিত মেয়াদ: {p.dueDate}</Text>
+              <Text style={styles.itemSub}>Purpose: {p.purpose}</Text>
+              <Text style={styles.itemSub}>Due Date: {p.dueDate}</Text>
             </View>
           ))
         )}
 
-        {/* পাওনার তালিকা */}
+        {/* Receivables */}
         <Text style={[styles.sectionHeading, { marginTop: 16 }]}>
-          ✅ আমার পাওনা (ওয়ারিশগণ যা দাবি ও আদায় করতে পারবেন):
+          ✅ My Receivables (Claimable by heirs):
         </Text>
         {receivables.length === 0 ? (
           <View style={styles.emptyBox}>
-            <Text style={styles.emptyText}>বর্তমানে কারো কাছে কোনো দেনা পাওনা নেই।</Text>
+            <Text style={styles.emptyText}>No active receivables at present.</Text>
           </View>
         ) : (
           receivables.map((r) => (
             <View key={r.id} style={[styles.itemCard, { borderLeftColor: Colors.primary.main }]}>
               <View style={styles.itemHeader}>
-                <Text style={styles.itemName}>{r.borrowerName || 'ঋণগ্রহীতা'}</Text>
+                <Text style={styles.itemName}>{r.borrowerName || 'Borrower'}</Text>
                 <Text style={[styles.itemAmount, { color: Colors.primary.main }]}>
-                  ৳ {r.remainingAmount.toLocaleString('en-IN')}
+                  BDT {r.remainingAmount.toLocaleString('en-US')}
                 </Text>
               </View>
-              <Text style={styles.itemSub}>উদ্দেশ্য: {r.purpose}</Text>
-              <Text style={styles.itemSub}>মেয়াদ: {r.dueDate}</Text>
+              <Text style={styles.itemSub}>Purpose: {r.purpose}</Text>
+              <Text style={styles.itemSub}>Due Date: {r.dueDate}</Text>
             </View>
           ))
         )}
@@ -129,12 +131,12 @@ export const WasiyyahScreen: React.FC<WasiyyahScreenProps> = ({ onBack }) => {
           style={styles.printBtn}
           onPress={() =>
             Alert.alert(
-              'অসিয়তনামা প্রস্তুত',
-              'সত্যায়িত অসিয়তনামা PDF ফাইল ডিভাইসে সংরক্ষিত হয়েছে। এটি পরিবার ও বিশ্বস্ত ব্যক্তির সাথে শেয়ার করে রাখতে পারেন।'
+              'Wasiyyah Statement Ready',
+              'Certified Al-Wasiyyah debt statement PDF saved to your device. You can share this with your family and trusted executor.'
             )
           }
         >
-          <Text style={styles.printBtnText}>অসিয়তনামা PDF ডাউনলোড ও প্রিন্ট করুন 📜</Text>
+          <Text style={styles.printBtnText}>Download & Print Al-Wasiyyah PDF 📜</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -188,7 +190,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     lineHeight: 20,
   },
-  hadithBangla: {
+  hadithEnglish: {
     fontSize: 12,
     color: '#78350F',
     textAlign: 'center',

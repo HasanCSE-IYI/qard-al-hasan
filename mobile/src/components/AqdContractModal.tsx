@@ -15,69 +15,69 @@ export const AqdContractModal: React.FC<AqdContractModalProps> = ({ visible, loa
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.title}>ডিজিটাল চুক্তিপত্র (العقد الشرعي)</Text>
+            <Text style={styles.title}>Digital Aqd Contract (Al-Aqd Ash-Shari)</Text>
             <TouchableOpacity onPress={onClose}>
               <Text style={styles.closeBtn}>✕</Text>
             </TouchableOpacity>
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
-            {/* বিসমিল্লাহ ও আয়াত */}
+            {/* Bismillah and Quranic Verse */}
             <View style={styles.bismillahBox}>
               <Text style={styles.bismillah}>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</Text>
               <Text style={styles.ayahQuote}>
-                “হে মুমিনগণ! যখন তোমরা নির্দিষ্ট মেয়াদের জন্য ঋণের লেনদেন কর, তখন তা লিখে রাখ...” (সূরা আল-বাক্বারাহ: ২৮২)
+                "O you who have believed, when you contract a debt for a specified term, write it down..." (Surah Al-Baqarah: 282)
               </Text>
             </View>
 
             <View style={styles.contractCard}>
               <View style={styles.sealBadge}>
-                <Text style={styles.sealText}>১০০% সুদ ও রিবা-মুক্ত কর্জ্যে হাসানাহ</Text>
+                <Text style={styles.sealText}>100% Zero-Riba Qard al-Hasan</Text>
               </View>
 
-              <Text style={styles.contractTitle}>পারস্পরিক সহযোগিতামূলক ঋণ চুক্তি</Text>
+              <Text style={styles.contractTitle}>Mutual Benevolent Loan Covenant</Text>
               <Text style={styles.clause}>
-                উভয় পক্ষ এই মর্মে আল্লাহ তায়ালাকে সাক্ষী রেখে অঙ্গীকারবদ্ধ হচ্ছেন যে, এই ঋণ সম্পূর্ণ আল্লাহ তায়ালার সন্তুষ্টির নিমিত্তে দেওয়া হয়েছে। এতে কোনো প্রচ্ছন্ন মুনাফা, সুদ বা জরিমানা যুক্ত নেই।
+                Both parties enter this sacred covenant taking Allah as their ultimate witness, affirming that this loan is extended purely for the pleasure of Allah, completely devoid of any interest, hidden charges, or penalties.
               </Text>
 
               <View style={styles.divider} />
 
               <View style={styles.row}>
-                <Text style={styles.fieldLabel}>ঋণদাতা (المقرض):</Text>
-                <Text style={styles.fieldValue}>{loan.lenderName || 'অনির্ধারিত'}</Text>
+                <Text style={styles.fieldLabel}>Lender (Al-Muqrid):</Text>
+                <Text style={styles.fieldValue}>{loan.lenderName || 'Unspecified'}</Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.fieldLabel}>ঋণগ্রহীতা (المقترض):</Text>
-                <Text style={styles.fieldValue}>{loan.borrowerName || 'অনির্ধারিত'}</Text>
+                <Text style={styles.fieldLabel}>Borrower (Al-Muqtarid):</Text>
+                <Text style={styles.fieldValue}>{loan.borrowerName || 'Unspecified'}</Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.fieldLabel}>মূল ঋণের পরিমাণ:</Text>
+                <Text style={styles.fieldLabel}>Principal Amount:</Text>
                 <Text style={[styles.fieldValue, styles.amountHighlight]}>
-                  ৳ {loan.principalAmount.toLocaleString('en-IN')} {loan.currency}
+                  BDT {loan.principalAmount.toLocaleString('en-US')} {loan.currency}
                 </Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.fieldLabel}>পরিশোধের মেয়াদ:</Text>
+                <Text style={styles.fieldLabel}>Repayment Due Date:</Text>
                 <Text style={styles.fieldValue}>{loan.dueDate}</Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.fieldLabel}>পরিশোধ পদ্ধতি:</Text>
+                <Text style={styles.fieldLabel}>Repayment Mode:</Text>
                 <Text style={styles.fieldValue}>
                   {loan.repaymentType === 'MONTHLY_INSTALLMENT'
-                    ? `মাসিক কিস্তি (${loan.installmentCount}টি)`
-                    : 'এককালীন পরিশোধ'}
+                    ? `Monthly Installments (${loan.installmentCount} terms)`
+                    : 'Lump-sum repayment'}
                 </Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.fieldLabel}>কর্জের উদ্দেশ্য:</Text>
+                <Text style={styles.fieldLabel}>Loan Purpose:</Text>
                 <Text style={styles.fieldValue}>{loan.purpose}</Text>
               </View>
 
               <View style={styles.divider} />
 
-              {/* ক্রিপ্টোগ্রাফিক ভেরিফিকেশন হ্যাশ */}
+              {/* Cryptographic SHA-256 Verification Hash */}
               <View style={styles.hashBox}>
-                <Text style={styles.hashLabel}>ট্যাম্পার-প্রুফ ভেরিফিকেশন হ্যাশ (SHA-256):</Text>
+                <Text style={styles.hashLabel}>Tamper-Proof Verification Hash (SHA-256):</Text>
                 <Text style={styles.hashValue} numberOfLines={1} ellipsizeMode="middle">
                   {loan.contractHash || '7a8f9c0e1d2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d'}
                 </Text>
@@ -85,21 +85,21 @@ export const AqdContractModal: React.FC<AqdContractModalProps> = ({ visible, loa
 
               <View style={styles.signaturesRow}>
                 <View style={styles.signBox}>
-                  <Text style={styles.signName}>✍️ {loan.lenderName || 'ঋণদাতা'}</Text>
-                  <Text style={styles.signStatus}>ডিজিটালভাবে স্বাক্ষরিত</Text>
+                  <Text style={styles.signName}>✍️ {loan.lenderName || 'Lender'}</Text>
+                  <Text style={styles.signStatus}>Digitally Signed</Text>
                 </View>
                 <View style={styles.signBox}>
-                  <Text style={styles.signName}>✍️ {loan.borrowerName || 'ঋণগ্রহীতা'}</Text>
-                  <Text style={styles.signStatus}>ডিজিটালভাবে স্বাক্ষরিত</Text>
+                  <Text style={styles.signName}>✍️ {loan.borrowerName || 'Borrower'}</Text>
+                  <Text style={styles.signStatus}>Digitally Signed</Text>
                 </View>
               </View>
             </View>
 
             <TouchableOpacity
               style={styles.downloadBtn}
-              onPress={() => Alert.alert('PDF প্রস্তুত', 'অফিশিয়াল চুক্তিপত্র ডিভাইসে সেভ করা হয়েছে।')}
+              onPress={() => Alert.alert('PDF Ready', 'Official contract document has been saved to your device.')}
             >
-              <Text style={styles.downloadBtnText}>চুক্তিপত্র PDF ডাউনলোড করুন 📄</Text>
+              <Text style={styles.downloadBtnText}>Download Contract PDF 📄</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

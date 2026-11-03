@@ -1,5 +1,5 @@
 /**
- * সুন্নাহ সম্মত ভদ্র ও শ্রদ্ধাপূর্ণ স্মরণিকা হেল্পার
+ * Sunnah-Compliant Respectful and Gentle Reminder Helpers
  */
 
 import { GENTLE_REMINDER_TEMPLATES } from '@qard/shared';
@@ -22,7 +22,7 @@ export function getFormattedReminderText(
 }
 
 export function buildWhatsAppShareUrl(phone: string, message: string): string {
-  // বাংলাদেশি ফোন নম্বর স্ট্যান্ডার্ডাইজেশন (017... -> 88017...)
+  // Standardize phone number format for WhatsApp (e.g. 017... -> 88017...)
   let cleanPhone = phone.replace(/[^0-9]/g, '');
   if (cleanPhone.startsWith('0')) {
     cleanPhone = '88' + cleanPhone;

@@ -42,20 +42,20 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.primary.dark} />
       
-      {/* টপ হেডার বার */}
+      {/* Top Header Bar */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.greeting}>আসসালামু আলাইকুম 🕊️</Text>
-          <Text style={styles.userName}>{user?.name || 'ব্যবহারকারী'}</Text>
+          <Text style={styles.greeting}>Assalamu Alaikum 🕊️</Text>
+          <Text style={styles.userName}>{user?.name || 'Valued User'}</Text>
         </View>
 
         <View style={styles.headerRight}>
-          {/* হুসনুল ওয়াফা স্কোর ব্যাজ */}
+          {/* Husn al-Wafa Ethical Credit Score */}
           <View style={styles.scoreBadge}>
-            <Text style={styles.scoreText}>হুসন স্কোর: {user?.husnScore || 100}</Text>
+            <Text style={styles.scoreText}>Husn Score: {user?.husnScore || 100}</Text>
           </View>
 
-          {/* প্রাইভেসি টগল */}
+          {/* Privacy Toggle */}
           <TouchableOpacity style={styles.privacyBtn} onPress={togglePrivacyMode}>
             <Text style={styles.privacyBtnText}>{isPrivacyMode ? '👁️‍🗨️' : '👁️'}</Text>
           </TouchableOpacity>
@@ -63,69 +63,69 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        {/* হাদিসের মোটিভেশনাল স্ট্রিপ */}
+        {/* Prophetic Hadith Strip */}
         <View style={styles.hadithStrip}>
           <Text style={styles.hadithText}>
-            “যে ব্যক্তি কোনো অভাবগ্রস্তকে অবকাশ দেয়, আল্লাহ তাকে হাশরের ময়দানে আরশের ছায়া দান করবেন।”
+            "Whoever grants respite to someone in difficulty, or forgives him, Allah will shade him in His shade on the Day of Resurrection."
           </Text>
         </View>
 
-        {/* সামারি ওভারভিউ কার্ড */}
+        {/* Summary Overview Cards */}
         <View style={styles.statsRow}>
           <StatCard
-            title="মোট প্রদত্ত কর্জ"
+            title="Total Lent (Receivable)"
             amount={dashboardSummary.totalLent}
             type="lent"
-            subtitle={`${dashboardSummary.activeGivenLoansCount}টি চলমান`}
+            subtitle={`${dashboardSummary.activeGivenLoansCount} active`}
           />
           <StatCard
-            title="মোট গৃহীত কর্জ"
+            title="Total Borrowed (Payable)"
             amount={dashboardSummary.totalBorrowed}
             type="borrowed"
-            subtitle={`${dashboardSummary.activeTakenLoansCount}টি চলমান`}
+            subtitle={`${dashboardSummary.activeTakenLoansCount} active`}
           />
         </View>
 
-        {/* সদকাহ হিসেবে মওকুফ কার্ড */}
+        {/* Sadaqah / Forgiven Debt Card */}
         <View style={styles.sadaqahRow}>
           <StatCard
-            title="আল্লাহর সন্তুষ্টিতে মওকুফ (সদকাহ)"
+            title="Forgiven for Allah's Sake (Sadaqah)"
             amount={dashboardSummary.totalSadaqahForgiven}
             type="sadaqah"
-            subtitle="সদকাহ জারিয়া হিসেবে সংরক্ষিত"
+            subtitle="Recorded as certified Sadaqah Jariyah"
           />
         </View>
 
-        {/* কুইক অ্যাকশন বাটনসমূহ */}
-        <Text style={styles.sectionTitle}>দ্রুত সেবা</Text>
+        {/* Quick Actions */}
+        <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.quickActionsGrid}>
           <TouchableOpacity style={[styles.actionBtn, { backgroundColor: Colors.primary.surface }]} onPress={onNavigateToNewLoan}>
             <Text style={styles.actionIcon}>🤝</Text>
-            <Text style={[styles.actionLabel, { color: Colors.primary.dark }]}>নতুন কর্জ দিন</Text>
+            <Text style={[styles.actionLabel, { color: Colors.primary.dark }]}>New Loan</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.actionBtn, { backgroundColor: Colors.accent.surface }]} onPress={onNavigateToLoans}>
             <Text style={styles.actionIcon}>📋</Text>
-            <Text style={[styles.actionLabel, { color: Colors.accent.gold }]}>কর্জের খাতা</Text>
+            <Text style={[styles.actionLabel, { color: Colors.accent.gold }]}>Loans Registry</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.actionBtn, { backgroundColor: '#F3E8FF' }]} onPress={onNavigateToWasiyyah}>
             <Text style={styles.actionIcon}>📜</Text>
-            <Text style={[styles.actionLabel, { color: '#6B21A8' }]}>অসিয়তনামা</Text>
+            <Text style={[styles.actionLabel, { color: '#6B21A8' }]}>Al-Wasiyyah</Text>
           </TouchableOpacity>
         </View>
 
-        {/* চলমান কর্জসমূহ */}
+        {/* Active Loans */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>চলমান কর্জসমূহ ({activeLoans.length})</Text>
+          <Text style={styles.sectionTitle}>Active Loans ({activeLoans.length})</Text>
           <TouchableOpacity onPress={onNavigateToLoans}>
-            <Text style={styles.seeAllText}>সব দেখুন ›</Text>
+            <Text style={styles.seeAllText}>See All ›</Text>
           </TouchableOpacity>
         </View>
 
         {activeLoans.length === 0 ? (
           <View style={styles.emptyCard}>
-            <Text style={styles.emptyText}>কোনো চলমান কর্জ নেই। নতুন কর্জের এন্ট্রি করুন।</Text>
+            <Text style={styles.emptyText}>No active loans found. Create a new loan to get started.</Text>
           </View>
         ) : (
           activeLoans.slice(0, 3).map((loan) => (
@@ -139,7 +139,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         )}
       </ScrollView>
 
-      {/* জেন্টল রিমাইন্ডার মডাল */}
+      {/* Gentle Reminder Modal */}
       {reminderLoan ? (
         <GentleReminderModal
           visible={!!reminderLoan}

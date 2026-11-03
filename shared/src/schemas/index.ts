@@ -1,29 +1,29 @@
 import { z } from 'zod';
 import { LOAN_STATUS, REPAYMENT_TYPE, PAYMENT_METHOD, GUARANTOR_ROLE } from '../constants';
 
-// ফোন নম্বর ভ্যালিডেশন (বাংলাদেশি ও আন্তর্জাতিক ফরম্যাট)
+// Phone number validation (Standard international and national formats)
 export const PhoneSchema = z
   .string()
-  .min(10, 'ফোন নম্বর ন্যূনতম ১০ ডিজিট হতে হবে')
-  .max(15, 'ফোন নম্বর সর্বোচ্চ ১৫ ডিজিট')
-  .regex(/^[0-9+]+$/, 'সঠিক ফোন নম্বর প্রদান করুন');
+  .min(10, 'Phone number must be at least 10 digits')
+  .max(15, 'Phone number must not exceed 15 digits')
+  .regex(/^[0-9+]+$/, 'Please enter a valid phone number');
 
-// ওটিপি রিকোয়েস্ট স্কিমা
+// OTP Request Schema
 export const RequestOtpSchema = z.object({
   phone: PhoneSchema,
 });
 
 export const VerifyOtpSchema = z.object({
   phone: PhoneSchema,
-  otp: z.string().length(6, 'OTP অবশ্যই ৬ সংখ্যার হতে হবে'),
-  name: z.string().min(2, 'নাম ন্যূনতম ২ অক্ষরের হতে হবে').optional(),
+  otp: z.string().length(6, 'OTP must be exactly 6 digits'),
+  name: z.string().min(2, 'Name must be at least 2 characters').optional(),
 });
 
-// কর্জে হাসানাহ আবেদন/তৈরি স্কিমা
+// Qard al-Hasan Loan Creation Schema
 export const CreateLoanSchema = z.object({
   borrowerPhone: PhoneSchema,
-  borrowerName: z.string().min(2, 'গ্রহীতার নাম লিখুন'),
-  principalAmount: z.number().positive('ঋণের পরিমাণ অবশ্যই ০-এর বেশি হতে হবে'),
+  borrowerName: z.string().min(2, 'Enter borrower name'),
+  principalAmount: z.number().positive('Principal amount must be greater than 0'),
   currency: z.string().default('BDT'),
   repaymentType: z.enum([
     REPAYMENT_TYPE.BULLET,
@@ -33,14 +33,14 @@ export const CreateLoanSchema = z.object({
   ]),
   installmentCount: z.number().int().positive().default(1),
   installmentAmount: z.number().positive().optional(),
-  purpose: z.string().min(3, 'ঋণ গ্রহণের সুনির্দিষ্ট কারণ উল্লেখ করুন'),
-  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'তারিখ YYYY-MM-DD ফরম্যাটে দিন'),
-  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'পরিশোধের শেষ তারিখ YYYY-MM-DD ফরম্যাটে দিন'),
+  purpose: z.string().min(3, 'Specify the purpose of the loan'),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD'),
+  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Due date format must be YYYY-MM-DD'),
   poolId: z.string().uuid().optional(),
   guarantors: z
     .array(
       z.object({
-        name: z.string().min(2, 'সাক্ষী/জামিনদারের নাম লিখুন'),
+        name: z.string().min(2, 'Enter witness or guarantor name'),
         phone: PhoneSchema,
         role: z.enum([GUARANTOR_ROLE.WITNESS, GUARANTOR_ROLE.FINANCIAL_GUARANTOR]),
       })
@@ -48,11 +48,11 @@ export const CreateLoanSchema = z.object({
     .optional(),
 });
 
-// কিস্তি পরিশোধ স্কিমা
+// Repayment Schema
 export const CreateRepaymentSchema = z.object({
   loanId: z.string(),
-  amount: z.number().positive('পরিশোধের পরিমাণ অবশ্যই ০-এর বেশি হতে হবে'),
-  paymentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'তারিখ YYYY-MM-DD ফরম্যাটে দিন'),
+  amount: z.number().positive('Repayment amount must be greater than 0'),
+  paymentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD'),
   paymentMethod: z.enum([
     PAYMENT_METHOD.BKASH,
     PAYMENT_METHOD.NAGAD,
@@ -65,23 +65,23 @@ export const CreateRepaymentSchema = z.object({
   notes: z.string().optional(),
 });
 
-// অবকাশ (Inzar al-Mu'sir) আবেদন স্কিমা
+// Grace Period / Hardship Request Schema (Inzar al-Mu'sir)
 export const CreateHardshipSchema = z.object({
   loanId: z.string(),
-  reason: z.string().min(5, 'অসচ্ছলতা বা সংকটের কারণ বিস্তারিত লিখুন'),
-  requestedNewDueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'নতুন তারিখ YYYY-MM-DD ফরম্যাটে দিন'),
+  reason: z.string().min(5, 'Describe the reason for hardship in detail'),
+  requestedNewDueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'New due date format must be YYYY-MM-DD'),
   proposedNewInstallment: z.number().positive().optional(),
 });
 
-// ঋণ মওকুফ (Ibra) স্কিমা
+// Debt Forgiveness Schema (Al-Ibra / Sadaqah)
 export const ForgiveLoanSchema = z.object({
   loanId: z.string(),
-  forgivenAmount: z.number().positive('মওকুফকৃত পরিমাণ ০-এর বেশি হতে হবে'),
+  forgivenAmount: z.number().positive('Forgiven amount must be greater than 0'),
   isFullForgiveness: z.boolean(),
   sadaqahIntentionNote: z.string().optional(),
 });
 
-// ঋণ হস্তান্তর (Hawalah) স্কিমা
+// Debt Transfer Schema (Al-Hawalah)
 export const HawalaTransferSchema = z.object({
   loanId: z.string(),
   newBorrowerPhone: PhoneSchema,

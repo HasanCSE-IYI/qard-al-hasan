@@ -1,6 +1,6 @@
 /**
- * বিকাশ, নগদ ও রকেট এসএমএস অটো-পার্সার
- * কপি করা ট্রানজ্যাকশন মেসেজ থেকে সরাসরি ডেটা এক্সট্র্যাক্ট করে
+ * bKash, Nagad, and Rocket MFS SMS Auto-Parser
+ * Extracts Transaction ID, Amount, Counterparty Phone, and Date from copied SMS text
  */
 
 export interface ParsedMfsData {
@@ -29,25 +29,25 @@ export function parseMfsSms(text: string): ParsedMfsData {
     method = 'ROCKET';
   }
 
-  // ১. TrxID প্যাটার্ন: "TrxID 9B8A7C6D" বা "TxnID: 9B8A7C6D"
+  // 1. TrxID Pattern: "TrxID 9B8A7C6D" or "TxnID: 9B8A7C6D"
   const trxMatch = clean.match(/(?:TrxID|TxnID|TxId|TransID|ID)[:\s]+([A-Za-z0-9]+)/i);
   if (trxMatch) {
     trxId = trxMatch[1].trim();
   }
 
-  // ২. অ্যামাউন্ট প্যাটার্ন: "Tk 5,000.00" বা "BDT 2500" বা "Tk. 1,000"
+  // 2. Amount Pattern: "Tk 5,000.00" or "BDT 2500" or "Tk. 1,000"
   const amountMatch = clean.match(/(?:Tk\.?|BDT)\s*([\d,]+\.?\d*)/i);
   if (amountMatch) {
     amount = parseFloat(amountMatch[1].replace(/,/g, ''));
   }
 
-  // ৩. ফোন নম্বর প্যাটার্ন: "from 01712345678" বা "to 01912345678"
+  // 3. Phone Number Pattern: "from 01712345678" or "to 01912345678"
   const phoneMatch = clean.match(/(?:from|to)\s*([01][3-9]\d{8})/i);
   if (phoneMatch) {
     counterpartyPhone = phoneMatch[1].trim();
   }
 
-  // ৪. তারিখ প্যাটার্ন: "at 12/10/2026" বা "on 2026-10-12"
+  // 4. Date Pattern: "at 12/10/2026" or "on 2026-10-12"
   const dateMatch = clean.match(/(\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2})/);
   if (dateMatch) {
     date = dateMatch[1];

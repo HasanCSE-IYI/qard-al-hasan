@@ -9,18 +9,18 @@ const DB_FILE = path.join(__dirname, '..', 'local-qard.db');
 const MEDIA_DIR = path.join(__dirname, '..', '.local-media');
 
 async function startServer() {
-  console.log('🕊️  কর্জ্যে হাসানাহ লোকাল ক্লাউডফ্লেয়ার ওয়ার্কার আরম্ভ হচ্ছে...');
+  console.log('🕊️  Starting Qard al-Hasan Cloudflare Worker Dev Server...');
 
   const db = createLocalD1(DB_FILE);
   const mediaBucket = createLocalR2(MEDIA_DIR);
   const kv = createLocalKV();
 
-  // D1 ইনিশিয়াল স্কিমা এক্সিকিউশন
+  // D1 initial schema execution
   const schemaPath = path.join(__dirname, '..', 'drizzle', '0000_initial_schema.sql');
   if (fs.existsSync(schemaPath)) {
     const sql = fs.readFileSync(schemaPath, 'utf8');
     await db.exec(sql);
-    console.log('✅ Cloudflare D1 লোকাল স্কিমা সফলভাবে সিঙ্ক হয়েছে।');
+    console.log('✅ Cloudflare D1 local schema synced successfully.');
   }
 
   const env = {
@@ -31,13 +31,13 @@ async function startServer() {
     JWT_SECRET: 'qard-al-hasan-super-secret-jwt-key-2026',
   };
 
-  // Node HTTP Server যা Hono অ্যাপকে ডিরেক্ট ওয়েব রিকোয়েস্ট পাস করে
+  // Node HTTP Server forwarding native requests to Hono app
   const server = http.createServer(async (req, res) => {
     try {
       const url = `http://${req.headers.host || '127.0.0.1:8787'}${req.url}`;
       const method = req.method || 'GET';
 
-      // বডি রিড
+      // Read request body
       const chunks: Buffer[] = [];
       for await (const chunk of req) {
         chunks.push(chunk);
@@ -76,11 +76,11 @@ async function startServer() {
   });
 
   server.listen(PORT, '127.0.0.1', () => {
-    console.log(`🚀 কর্জ্যে হাসানাহ ক্লাউডফ্লেয়ার লোকাল ওয়ার্কার রানিং: http://127.0.0.1:${PORT}`);
-    console.log(`📡 হেলথ চেক এন্ডপয়েন্ট: http://127.0.0.1:${PORT}/health`);
+    console.log(`🚀 Qard al-Hasan Cloudflare Worker running at: http://127.0.0.1:${PORT}`);
+    console.log(`📡 Health check endpoint: http://127.0.0.1:${PORT}/health`);
   });
 }
 
 startServer().catch((err) => {
-  console.error('সার্ভার চালু করতে সমস্যা:', err);
+  console.error('Failed to start dev server:', err);
 });

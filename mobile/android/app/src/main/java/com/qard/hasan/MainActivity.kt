@@ -10,10 +10,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val tvStatus = findViewById<TextView>(R.id.tvStatus)
-        tvStatus.text = "🕊️ কর্জ্যে হাসানাহ (Qard al-Hasan) মোবাইল অ্যাপ প্রস্তুত!\n\n" +
-                "✓ Cloudflare Workers & D1 Database সংযুক্ত\n" +
-                "✓ Zero-Riba (শূন্য সুদ) নিশ্চিতকরণ\n" +
-                "✓ বিকাশ/নগদ SMS পার্সার ও ডিজিটাল চুক্তিপত্র সক্রিয়\n" +
-                "✓ আল-ওয়াসিয়্যাহ (অসিয়তনামা) মডিউল প্রস্তুত"
+        tvStatus.text = "🕊️ Qard al-Hasan mobile app ready!\n\n" +
+                "✓ Cloudflare Workers & D1 Database connected\n" +
+                "✓ Zero-Riba (100% interest-free) guarantee\n" +
+                "✓ bKash/Nagad MFS parser & digital Aqd contracts active\n" +
+                "✓ Al-Wasiyyah (Islamic Will & Liability Declaration) ready"
     }
 }

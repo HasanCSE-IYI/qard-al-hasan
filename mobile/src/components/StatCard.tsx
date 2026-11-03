@@ -42,7 +42,7 @@ export const StatCard: React.FC<StatCardProps> = ({ title, amount, subtitle, typ
     <View style={[styles.card, { backgroundColor: theme.bg, borderColor: theme.border }]}>
       <Text style={styles.title}>{title}</Text>
       <Text style={[styles.amount, { color: theme.accent }]}>
-        {isPrivacyMode ? '৳ ••••••' : `৳ ${amount.toLocaleString('en-IN')}`}
+        {isPrivacyMode ? 'BDT ••••••' : `BDT ${amount.toLocaleString('en-US')}`}
       </Text>
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </View>

@@ -9,7 +9,7 @@ interface AppState {
   dashboardSummary: DashboardSummary;
   selectedLoan: Loan | null;
 
-  // অ্যাকশনসমূহ
+  // Actions
   setUser: (user: User | null) => void;
   togglePrivacyMode: () => void;
   setLoans: (loans: Loan[]) => void;
@@ -22,15 +22,15 @@ interface AppState {
   seedDemoData: () => void;
 }
 
-// প্রারম্ভিক ডেমো ডাটা (সুন্নাহ ভিত্তিক বাস্তব চিত্র)
+// Initial demonstration data representing Sunnah-based benevolent lending
 const initialUser: User = {
   id: 'user-001',
-  name: 'মাহমুদুল হাসান',
+  name: 'Mahmud al Hasan',
   phone: '01711223344',
   email: 'hasan@example.com',
   role: 'INDIVIDUAL',
   avatarUrl: null,
-  husnScore: 115, // হুসনুল ওয়াফা সুনাম স্কোর
+  husnScore: 115, // Husn al-Wafa ethical credit score
   isVerified: true,
   createdAt: '2026-01-15T10:00:00Z',
   updatedAt: '2026-11-01T12:00:00Z',
@@ -41,15 +41,15 @@ const initialLoans: Loan[] = [
     id: 'loan-101',
     lenderId: 'user-001',
     borrowerId: 'user-002',
-    lenderName: 'মাহমুদুল হাসান',
-    borrowerName: 'আব্দুর রহমান',
+    lenderName: 'Mahmud al Hasan',
+    borrowerName: 'Abdur Rahman',
     principalAmount: 35000,
     remainingAmount: 15000,
     currency: 'BDT',
     repaymentType: REPAYMENT_TYPE.MONTHLY_INSTALLMENT,
     installmentCount: 7,
     installmentAmount: 5000,
-    purpose: 'পারিবারিক চিকিৎসা ও ওষুধের বিল পরিশোধ',
+    purpose: 'Family medical and medication expenses',
     status: LOAN_STATUS.PARTIALLY_PAID,
     startDate: '2026-08-01',
     dueDate: '2026-12-01',
@@ -62,15 +62,15 @@ const initialLoans: Loan[] = [
     id: 'loan-102',
     lenderId: 'user-003',
     borrowerId: 'user-001',
-    lenderName: 'ড. রফিকুল ইসলাম',
-    borrowerName: 'মাহমুদুল হাসান',
+    lenderName: 'Dr. Rafiqul Islam',
+    borrowerName: 'Mahmud al Hasan',
     principalAmount: 50000,
     remainingAmount: 50000,
     currency: 'BDT',
     repaymentType: REPAYMENT_TYPE.BULLET,
     installmentCount: 1,
     installmentAmount: 50000,
-    purpose: 'ক্ষুদ্র ব্যবসার জন্য কাঁচামাল ক্রয়',
+    purpose: 'Raw material procurement for small business',
     status: LOAN_STATUS.ACTIVE,
     startDate: '2026-09-15',
     dueDate: '2026-11-20',
@@ -83,16 +83,16 @@ const initialLoans: Loan[] = [
     id: 'loan-103',
     lenderId: 'user-001',
     borrowerId: 'user-004',
-    lenderName: 'মাহমুদুল হাসান',
-    borrowerName: 'হাফেজ জুবায়ের',
+    lenderName: 'Mahmud al Hasan',
+    borrowerName: 'Hafiz Zubair',
     principalAmount: 20000,
     remainingAmount: 0,
     currency: 'BDT',
     repaymentType: REPAYMENT_TYPE.BULLET,
     installmentCount: 1,
     installmentAmount: 20000,
-    purpose: 'মাদরাসার কিতাবাদি ও পরীক্ষা ফি',
-    status: LOAN_STATUS.FORGIVEN_IBRA, // সদকাহ হিসেবে মওকুফ
+    purpose: 'Madrasah study books and exam fees',
+    status: LOAN_STATUS.FORGIVEN_IBRA, // Forgiven as voluntary charity (Al-Ibra)
     startDate: '2026-05-10',
     dueDate: '2026-09-10',
     revId: 2,
@@ -111,7 +111,7 @@ const initialRepayments: Repayment[] = [
     paymentMethod: PAYMENT_METHOD.BKASH,
     transactionRef: '9H7A6B5C4D',
     status: 'CONFIRMED',
-    notes: 'প্রথম দুই কিস্তি একসাথে পরিশোধিত',
+    notes: 'First two installments paid together',
     createdAt: '2026-09-02T16:00:00Z',
   },
   {
@@ -122,7 +122,7 @@ const initialRepayments: Repayment[] = [
     paymentMethod: PAYMENT_METHOD.NAGAD,
     transactionRef: '8K2M9N4P1Q',
     status: 'CONFIRMED',
-    notes: 'অক্টোবর মাসের কিস্তি',
+    notes: 'October monthly installment',
     createdAt: '2026-10-05T14:30:00Z',
   },
 ];

@@ -8,7 +8,7 @@ import { authMiddleware, AuthUser } from '../middleware/auth';
 
 export const authRouter = new Hono<{ Bindings: Bindings; Variables: { user: AuthUser } }>();
 
-// ওটিপি রিকোয়েস্ট
+// Request OTP
 authRouter.post('/request-otp', async (c) => {
   const body = await c.req.json();
   const parsed = RequestOtpSchema.safeParse(body);
@@ -17,9 +17,9 @@ authRouter.post('/request-otp', async (c) => {
   }
 
   const { phone } = parsed.data;
-  // ৬ ডিজিটের নিরাপদ ওটিপি
+  // 6-digit secure OTP
   const otp = c.env.ENVIRONMENT === 'development' ? '123456' : Math.floor(100000 + Math.random() * 900000).toString();
-  const expiresAt = Date.now() + 5 * 60 * 1000; // ৫ মিনিট মেয়াদ
+  const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes validity
 
   const db = getDb(c.env.DB);
   await db
@@ -32,12 +32,12 @@ authRouter.post('/request-otp', async (c) => {
 
   return c.json({
     success: true,
-    message: 'OTP পাঠানো হয়েছে',
+    message: 'OTP sent successfully',
     devOtp: c.env.ENVIRONMENT === 'development' ? otp : undefined,
   });
 });
 
-// ওটিপি যাচাই ও লগইন/রেজিস্ট্রেশন
+// Verify OTP & Login/Register
 authRouter.post('/verify-otp', async (c) => {
   const body = await c.req.json();
   const parsed = VerifyOtpSchema.safeParse(body);
@@ -50,10 +50,10 @@ authRouter.post('/verify-otp', async (c) => {
 
   const session = await db.select().from(otpSessions).where(eq(otpSessions.phone, phone)).get();
   if (!session || session.otp !== otp || session.expiresAt < Date.now()) {
-    return c.json({ success: false, error: 'ভুল বা মেয়াদোত্তীর্ণ OTP' }, 400);
+    return c.json({ success: false, error: 'Invalid or expired OTP' }, 400);
   }
 
-  // ইউজারের তথ্য খোঁজা বা তৈরি
+  // Lookup or create user
   let user = await db.select().from(users).where(eq(users.phone, phone)).get();
   const now = new Date().toISOString();
 
@@ -72,17 +72,17 @@ authRouter.post('/verify-otp', async (c) => {
     user = await db.select().from(users).where(eq(users.id, newUserId)).get();
   }
 
-  // ওটিপি সেশন পরিষ্কার
+  // Clear OTP session
   await db.delete(otpSessions).where(eq(otpSessions.phone, phone));
 
-  // JWT টোকেন জেনারেট
+  // Generate JWT token
   const secret = c.env.JWT_SECRET || 'qard-al-hasan-super-secret-jwt-key-2026';
   const token = await sign(
     {
       id: user!.id,
       phone: user!.phone,
       role: user!.role,
-      exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60, // ৩০ দিন মেয়াদ
+      exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60, // 30 days validity
     },
     secret,
     'HS256'
@@ -97,13 +97,13 @@ authRouter.post('/verify-otp', async (c) => {
   });
 });
 
-// প্রোফাইল তথ্য
+// User Profile Information
 authRouter.get('/me', authMiddleware, async (c) => {
   const authUser = c.get('user');
   const db = getDb(c.env.DB);
   const user = await db.select().from(users).where(eq(users.id, authUser.id)).get();
   if (!user) {
-    return c.json({ success: false, error: 'ইউজার পাওয়া যায়নি' }, 404);
+    return c.json({ success: false, error: 'User not found' }, 404);
   }
   return c.json({ success: true, data: user });
 });

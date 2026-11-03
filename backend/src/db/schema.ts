@@ -1,6 +1,6 @@
 import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 
-// ইউজার টেবিল
+// Users Table
 export const users = sqliteTable('users', {
   id: text('id').primaryKey(), // UUID
   name: text('name').notNull(),
@@ -8,13 +8,13 @@ export const users = sqliteTable('users', {
   email: text('email'),
   role: text('role', { enum: ['INDIVIDUAL', 'ORGANIZATION_ADMIN', 'TRUSTEE'] }).default('INDIVIDUAL').notNull(),
   avatarUrl: text('avatar_url'),
-  husnScore: integer('husn_score').default(100).notNull(), // ১০০ পয়েন্ট বেস
+  husnScore: integer('husn_score').default(100).notNull(), // 100 points baseline
   isVerified: integer('is_verified', { mode: 'boolean' }).default(false).notNull(),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull(),
 });
 
-// সমাজ বা প্রাতিষ্ঠানিক ফান্ড পুল (মসজিদ/ট্রাস্ট ফান্ড)
+// Community / Institutional Fund Pools (Mosque / Welfare Trusts)
 export const communityPools = sqliteTable('community_pools', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
@@ -25,7 +25,7 @@ export const communityPools = sqliteTable('community_pools', {
   createdAt: text('created_at').notNull(),
 });
 
-// কর্জে হাসানাহ মূল লোন টেবিল
+// Qard al-Hasan Core Loans Table
 export const loans = sqliteTable('loans', {
   id: text('id').primaryKey(),
   poolId: text('pool_id').references(() => communityPools.id),
@@ -55,8 +55,8 @@ export const loans = sqliteTable('loans', {
   }).default('PROPOSED').notNull(),
   startDate: text('start_date').notNull(),
   dueDate: text('due_date').notNull(),
-  revId: integer('rev_id').default(1).notNull(), // কনফ্লিক্ট নিরসন
-  contractHash: text('contract_hash'), // SHA-256 ভেরিফিকেশন হ্যাশ
+  revId: integer('rev_id').default(1).notNull(), // Conflict resolution revision ID
+  contractHash: text('contract_hash'), // SHA-256 integrity verification hash
   contractPdfUrl: text('contract_pdf_url'),
   lenderSignedAt: text('lender_signed_at'),
   borrowerSignedAt: text('borrower_signed_at'),
@@ -64,7 +64,7 @@ export const loans = sqliteTable('loans', {
   updatedAt: text('updated_at').notNull(),
 });
 
-// কিস্তি ও পেমেন্ট ট্র্যাকিং
+// Repayments and Installments Tracking Table
 export const repayments = sqliteTable('repayments', {
   id: text('id').primaryKey(),
   loanId: text('loan_id').references(() => loans.id).notNull(),
@@ -84,7 +84,7 @@ export const repayments = sqliteTable('repayments', {
   createdAt: text('created_at').notNull(),
 });
 
-// সাক্ষী ও জামিনদার
+// Witnesses and Guarantors Table
 export const guarantors = sqliteTable('guarantors', {
   id: text('id').primaryKey(),
   loanId: text('loan_id').references(() => loans.id).notNull(),
@@ -97,7 +97,7 @@ export const guarantors = sqliteTable('guarantors', {
   signatureImageUrl: text('signature_image_url'),
 });
 
-// সংকটাপন্ন অবকাশ আবেদন (Inzar al-Mu'sir)
+// Hardship / Grace Period Requests Table (Inzar al-Mu'sir)
 export const hardshipRequests = sqliteTable('hardship_requests', {
   id: text('id').primaryKey(),
   loanId: text('loan_id').references(() => loans.id).notNull(),
@@ -113,7 +113,7 @@ export const hardshipRequests = sqliteTable('hardship_requests', {
   createdAt: text('created_at').notNull(),
 });
 
-// অডিট লগ
+// Shariah Audit Logs Table
 export const auditLogs = sqliteTable('audit_logs', {
   id: text('id').primaryKey(),
   loanId: text('loan_id').references(() => loans.id).notNull(),
@@ -123,7 +123,7 @@ export const auditLogs = sqliteTable('audit_logs', {
   createdAt: text('created_at').notNull(),
 });
 
-// ওটিপি টেবিল (KV ফলব্যাক বা ডেভেলপমেন্ট)
+// OTP Sessions Table (KV fallback / Local dev)
 export const otpSessions = sqliteTable('otp_sessions', {
   phone: text('phone').primaryKey(),
   otp: text('otp').notNull(),

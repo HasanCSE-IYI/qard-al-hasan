@@ -46,22 +46,22 @@ export const LoansScreen: React.FC<LoansScreenProps> = ({ onBack, onSelectLoan, 
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={onBack}>
-          <Text style={styles.backBtnText}>‹ ড্যাশবোর্ড</Text>
+          <Text style={styles.backBtnText}>‹ Dashboard</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>কর্জের খাতা</Text>
+        <Text style={styles.headerTitle}>Loans Registry</Text>
         <TouchableOpacity style={styles.addBtn} onPress={onNavigateToNewLoan}>
-          <Text style={styles.addBtnText}>+ নতুন</Text>
+          <Text style={styles.addBtnText}>+ New</Text>
         </TouchableOpacity>
       </View>
 
-      {/* ট্যাব বার */}
+      {/* Tabs */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'LENT' && styles.tabActive]}
           onPress={() => setActiveTab('LENT')}
         >
           <Text style={[styles.tabText, activeTab === 'LENT' && styles.tabTextActive]}>
-            আমি যাদের দিয়েছি (প্রদত্ত)
+            Loans Given (Receivables)
           </Text>
         </TouchableOpacity>
 
@@ -70,29 +70,29 @@ export const LoansScreen: React.FC<LoansScreenProps> = ({ onBack, onSelectLoan, 
           onPress={() => setActiveTab('BORROWED')}
         >
           <Text style={[styles.tabText, activeTab === 'BORROWED' && styles.tabTextActive]}>
-            আমি যাদের থেকে নিয়েছি (গৃহীত)
+            Loans Taken (Payables)
           </Text>
         </TouchableOpacity>
       </View>
 
-      {/* সার্চ বার */}
+      {/* Search Bar */}
       <View style={styles.searchBox}>
         <TextInput
           style={styles.searchInput}
-          placeholder="নাম বা উদ্দেশ্য দিয়ে খুঁজুন..."
+          placeholder="Search by name or purpose..."
           placeholderTextColor={Colors.slate.light}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
       </View>
 
-      {/* লোন লিস্ট */}
+      {/* Loan List */}
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listContent}>
         {filteredLoans.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>📖</Text>
-            <Text style={styles.emptyTitle}>কোনো রেকর্ড পাওয়া যায়নি</Text>
-            <Text style={styles.emptySubtitle}>নতুন কর্জের হিসাব তৈরি করতে উপরের '+ নতুন' বাটন চাপুন।</Text>
+            <Text style={styles.emptyTitle}>No records found</Text>
+            <Text style={styles.emptySubtitle}>Tap the "+ New" button above to record a new loan.</Text>
           </View>
         ) : (
           filteredLoans.map((loan) => (
@@ -106,7 +106,7 @@ export const LoansScreen: React.FC<LoansScreenProps> = ({ onBack, onSelectLoan, 
         )}
       </ScrollView>
 
-      {/* রিমাইন্ডার মডাল */}
+      {/* Gentle Reminder Modal */}
       {reminderLoan ? (
         <GentleReminderModal
           visible={!!reminderLoan}

@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `otp_sessions` (
   `expires_at` INTEGER NOT NULL
 );
 
--- কর্মক্ষমতা বৃদ্ধির জন্য ইনডেক্সসমূহ
+-- Performance indexes
 CREATE INDEX IF NOT EXISTS `idx_loans_lender` ON `loans`(`lender_id`);
 CREATE INDEX IF NOT EXISTS `idx_loans_borrower` ON `loans`(`borrower_id`);
 CREATE INDEX IF NOT EXISTS `idx_loans_status` ON `loans`(`status`);

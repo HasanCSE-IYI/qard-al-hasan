@@ -9,17 +9,17 @@ export const wasiyyahRouter = new Hono<{ Bindings: Bindings; Variables: { user: 
 
 wasiyyahRouter.use('*', authMiddleware);
 
-// মৃত্যুর পর কর্জের পূর্ণাঙ্গ ওয়াসিয়তনামা ও স্টেটমেন্ট
+// Al-Wasiyyah: Complete Islamic Will & Certified Debt Statement
 wasiyyahRouter.get('/statement', async (c) => {
   const authUser = c.get('user');
   const db = getDb(c.env.DB);
 
   const currentUser = await db.select().from(users).where(eq(users.id, authUser.id)).get();
   if (!currentUser) {
-    return c.json({ success: false, error: 'ইউজার পাওয়া যায়নি' }, 404);
+    return c.json({ success: false, error: 'User not found' }, 404);
   }
 
-  // ১. আমি যাদের কর্জ দিয়েছি (Receivables - ওয়ারিশগণ যা দাবি করতে পারেন)
+  // 1. Receivables: Loans given to others (Heirs may claim these)
   const lentList = await db
     .select()
     .from(loans)
@@ -36,7 +36,7 @@ wasiyyahRouter.get('/statement', async (c) => {
     const bUser = await db.select().from(users).where(eq(users.id, item.borrowerId)).get();
     receivables.push({
       loanId: item.id,
-      counterpartyName: bUser?.name || 'অজ্ঞাত',
+      counterpartyName: bUser?.name || 'Unknown',
       counterpartyPhone: bUser?.phone || '',
       principalAmount: item.principalAmount,
       remainingAmount: item.remainingAmount,
@@ -46,7 +46,7 @@ wasiyyahRouter.get('/statement', async (c) => {
     });
   }
 
-  // ২. আমি যাদের কাছ থেকে কর্জ নিয়েছি (Payables - মৃত্যুর পর ত্যাজ্য সম্পত্তি থেকে সর্বপ্রথম যা পরিশোধ ফরজ)
+  // 2. Payables: Debts owed to others (Mandatory priority settlement from estate prior to inheritance distribution)
   const borrowedList = await db
     .select()
     .from(loans)
@@ -63,7 +63,7 @@ wasiyyahRouter.get('/statement', async (c) => {
     const lUser = await db.select().from(users).where(eq(users.id, item.lenderId)).get();
     payables.push({
       loanId: item.id,
-      counterpartyName: lUser?.name || 'অজ্ঞাত',
+      counterpartyName: lUser?.name || 'Unknown',
       counterpartyPhone: lUser?.phone || '',
       principalAmount: item.principalAmount,
       remainingAmount: item.remainingAmount,
@@ -78,7 +78,7 @@ wasiyyahRouter.get('/statement', async (c) => {
   const netBalance = totalReceivable - totalPayable;
   const now = new Date().toISOString();
 
-  // ক্রিপ্টোগ্রাফিক সত্যতা হ্যাশ
+  // Cryptographic integrity verification hash
   const rawData = JSON.stringify({ userId: currentUser.id, totalReceivable, totalPayable, date: now });
   const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(rawData));
   const sha256VerificationHash = Array.from(new Uint8Array(hashBuffer))
@@ -94,7 +94,7 @@ wasiyyahRouter.get('/statement', async (c) => {
         phone: currentUser.phone,
       },
       quranicReminder:
-        '“যে ব্যক্তি কোনো অসিয়ত রেখে যেতে চায়, তার উচিত নয় দুই রাত কাটানো এমন অবস্থায় যে তার অসিয়তনামা তার কাছে লিখিত নেই।” (সহীহ বুখারী: ২৭৩৮)',
+        '"It is not permissible for any Muslim who has something to will to stay for two nights without having his will written with him." (Sahih al-Bukhari: 2738)',
       summary: {
         totalReceivable,
         totalPayable,
