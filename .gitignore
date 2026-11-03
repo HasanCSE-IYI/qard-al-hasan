@@ -38,6 +38,7 @@ yarn-error.log*
 dist/
 build/
 coverage/
+*.apk
 
 # Local SQLite DB
 *.db
