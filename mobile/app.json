@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Qard al-Hasan",
+    "slug": "qard-al-hasan",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#064E3B"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.qard.hasan"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#064E3B"
+      },
+      "package": "com.qard.hasan"
+    }
+  }
+}

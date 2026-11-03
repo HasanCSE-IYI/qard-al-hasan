@@ -1,0 +1,29 @@
+{
+  "name": "qard-al-hasan-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "কর্জ্যে হাসানাহ (Qard al-Hasan) ম্যানেজমেন্ট ইকোসিস্টেম - কমপ্লিট মোবাইল অ্যাপ ও এজ ব্যাকএন্ড",
+  "workspaces": [
+    "shared",
+    "backend",
+    "mobile"
+  ],
+  "scripts": {
+    "build:shared": "npm --workspace=shared run build",
+    "dev:backend": "npm --workspace=backend run dev",
+    "build:backend": "npm --workspace=backend run build",
+    "start:mobile": "npm --workspace=mobile run start",
+    "test": "npm --workspace=backend test"
+  },
+  "keywords": [
+    "qard-al-hasan",
+    "islamic-fintech",
+    "interest-free",
+    "react-native",
+    "cloudflare-workers",
+    "d1",
+    "drizzle-orm"
+  ],
+  "author": "Mahmud al Hasan <rauaha@gmail.com>",
+  "license": "MIT"
+}

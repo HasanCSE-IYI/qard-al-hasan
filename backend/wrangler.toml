@@ -1,0 +1,22 @@
+name = "qard-backend"
+main = "src/index.ts"
+compatibility_date = "2024-10-22"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "development"
+JWT_SECRET = "qard-al-hasan-super-secret-jwt-key-2026"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "qard-db"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "drizzle"
+
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "qard-media"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "00000000000000000000000000000000"

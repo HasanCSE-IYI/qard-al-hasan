@@ -1,0 +1,20 @@
+{
+  "name": "@qard/backend",
+  "version": "1.0.0",
+  "description": "Cloudflare Workers API with Hono, Drizzle ORM and D1 Database",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.2.2",
+    "@qard/shared": "file:../shared",
+    "drizzle-orm": "^0.33.0",
+    "hono": "^4.6.9",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241022.0",
+    "typescript": "^5.6.3"
+  }
+}
