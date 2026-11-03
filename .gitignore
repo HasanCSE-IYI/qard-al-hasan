@@ -38,3 +38,9 @@ yarn-error.log*
 dist/
 build/
 coverage/
+
+# Local SQLite DB
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

@@ -25,5 +25,8 @@
     "drizzle-orm"
   ],
   "author": "Mahmud al Hasan <rauaha@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.6.6"
+  }
 }

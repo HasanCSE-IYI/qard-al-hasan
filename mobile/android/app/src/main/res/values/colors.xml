@@ -1,0 +1,7 @@
+<resources>
+    <color name="primary_dark">#064E3B</color>
+    <color name="primary_main">#059669</color>
+    <color name="accent_gold">#D97706</color>
+    <color name="bg_light">#F8FAFC</color>
+    <color name="white">#FFFFFF</color>
+</resources>
