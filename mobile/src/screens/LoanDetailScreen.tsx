@@ -15,6 +15,7 @@ import { PaymentModal } from '../components/PaymentModal';
 import { GentleReminderModal } from '../components/GentleReminderModal';
 import { IbraModal } from '../components/IbraModal';
 import { AqdContractModal } from '../components/AqdContractModal';
+import { RescheduleModal } from '../components/RescheduleModal';
 
 interface LoanDetailScreenProps {
   loan: Loan;
@@ -33,6 +34,7 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [showIbraModal, setShowIbraModal] = useState(false);
   const [showAqdModal, setShowAqdModal] = useState(false);
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
 
   const isLender = loan.lenderId === user?.id;
   const isBorrower = loan.borrowerId === user?.id;
@@ -40,26 +42,15 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
   const progressPercent = Math.min(100, Math.round((paidAmount / (loan.principalAmount || 1)) * 100));
 
   const handleGrantHardship = () => {
-    Alert.prompt
-      ? Alert.prompt(
-          'Grant Grace Period (Inzar)',
-          'Enter new due date (YYYY-MM-DD):',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            {
-              text: 'Grant',
-              onPress: (newDate?: string) => {
-                if (newDate && newDate.trim()) {
-                  grantHardshipExtension(loan.id, newDate.trim());
-                  Alert.alert('Success', `Due date extended until ${newDate}.`);
-                }
-              },
-            },
-          ],
-          'plain-text',
-          '2027-01-31'
-        )
-      : Alert.alert('Grace Period Granted', 'Loan term has been extended.');
+    setShowRescheduleModal(true);
+  };
+
+  const handleConfirmReschedule = (newDate: string, reason: string) => {
+    grantHardshipExtension(loan.id, newDate);
+    Alert.alert(
+      'Grace Period Granted (Inzar)',
+      `Loan term extended until ${newDate}.\nReason: ${reason}\n\n"And if someone is in hardship, then let there be postponement until ease." (Quran 2:280)`
+    );
   };
 
   return (
@@ -202,6 +193,14 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
       ) : null}
       {showAqdModal ? (
         <AqdContractModal visible={showAqdModal} loan={loan} onClose={() => setShowAqdModal(false)} />
+      ) : null}
+      {showRescheduleModal ? (
+        <RescheduleModal
+          visible={showRescheduleModal}
+          onClose={() => setShowRescheduleModal(false)}
+          currentDueDate={loan.dueDate}
+          onConfirm={handleConfirmReschedule}
+        />
       ) : null}
     </SafeAreaView>
   );

@@ -45,3 +45,7 @@ coverage/
 *.db-journal
 *.db-wal
 *.db-shm
+
+# Attachments
+attachments/
+

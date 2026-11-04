@@ -27,6 +27,9 @@ export function parseMfsSms(text: string): ParsedMfsData {
     method = 'NAGAD';
   } else if (lower.includes('rocket')) {
     method = 'ROCKET';
+  } else if (/trxid/i.test(clean)) {
+    // Standard bKash transaction confirmation default pattern
+    method = 'BKASH';
   }
 
   // 1. TrxID Pattern: "TrxID 9B8A7C6D" or "TxnID: 9B8A7C6D"
@@ -41,8 +44,8 @@ export function parseMfsSms(text: string): ParsedMfsData {
     amount = parseFloat(amountMatch[1].replace(/,/g, ''));
   }
 
-  // 3. Phone Number Pattern: "from 01712345678" or "to 01912345678"
-  const phoneMatch = clean.match(/(?:from|to)\s*([01][3-9]\d{8})/i);
+  // 3. Phone Number Pattern: 11-digit Bangladeshi mobile numbers (e.g. 01712345678, 01987654321)
+  const phoneMatch = clean.match(/(?:from|to)?\s*(?:\+?88)?(01[3-9]\d{8})/i);
   if (phoneMatch) {
     counterpartyPhone = phoneMatch[1].trim();
   }

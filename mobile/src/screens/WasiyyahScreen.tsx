@@ -7,6 +7,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Alert,
+  Linking,
 } from 'react-native';
 import { Colors } from '../theme/colors';
 import { useAppStore } from '../store/useAppStore';
@@ -32,6 +33,41 @@ export const WasiyyahScreen: React.FC<WasiyyahScreenProps> = ({ onBack }) => {
   const totalPayables = payables.reduce((sum, l) => sum + l.remainingAmount, 0);
 
   const netBalance = totalReceivables - totalPayables;
+
+  const handleShareWasiyyah = async () => {
+    const receivablesList = receivables.length > 0
+      ? receivables.map((r, i) => `  ${i + 1}. Debtor: ${r.borrowerName} | Amount: BDT ${r.remainingAmount.toLocaleString('en-US')} | Due: ${r.dueDate}`).join('\n')
+      : '  None (No outstanding receivables)';
+
+    const payablesList = payables.length > 0
+      ? payables.map((p, i) => `  ${i + 1}. Creditor: ${p.lenderName} | Amount: BDT ${p.remainingAmount.toLocaleString('en-US')} | Due: ${p.dueDate}`).join('\n')
+      : '  None (No outstanding debts)';
+
+    const wasiyyahText = `📜 CERTIFIED AL-WASIYYAH (ISLAMIC WILL & DEBT DECLARATION)\n` +
+      `بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n` +
+      `"It is not permissible for any Muslim who has something to will to stay for two nights without having his will written with him." (Sahih al-Bukhari: 2738)\n\n` +
+      `DECLARANT:\n` +
+      `• Name: ${user?.name || 'Self'}\n` +
+      `• Phone: ${user?.phone || 'N/A'}\n` +
+      `• Declaration Date: ${new Date().toISOString().split('T')[0]}\n\n` +
+      `1. LIABILITIES / DEBTS OWED TO OTHERS (Al-Duyun):\n` +
+      `[Estate executors must settle these before any inheritance distribution per Quran 4:11]\n` +
+      `${payablesList}\n` +
+      `Total Liabilities: BDT ${totalPayables.toLocaleString('en-US')}\n\n` +
+      `2. RECEIVABLES / BENEVOLENT LOANS EXTENDED (Al-Huquq):\n` +
+      `${receivablesList}\n` +
+      `Total Receivables: BDT ${totalReceivables.toLocaleString('en-US')}\n\n` +
+      `NET ESTATE DEBT POSITION: BDT ${netBalance.toLocaleString('en-US')}\n\n` +
+      `Generated securely via Qard al-Hasan Ecosystem`;
+
+    const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(wasiyyahText)}`;
+    const canOpen = await Linking.canOpenURL(whatsappUrl);
+    if (canOpen) {
+      await Linking.openURL(whatsappUrl);
+    } else {
+      Alert.alert('Al-Wasiyyah Statement Ready', wasiyyahText);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -129,14 +165,9 @@ export const WasiyyahScreen: React.FC<WasiyyahScreenProps> = ({ onBack }) => {
 
         <TouchableOpacity
           style={styles.printBtn}
-          onPress={() =>
-            Alert.alert(
-              'Wasiyyah Statement Ready',
-              'Certified Al-Wasiyyah debt statement PDF saved to your device. You can share this with your family and trusted executor.'
-            )
-          }
+          onPress={handleShareWasiyyah}
         >
-          <Text style={styles.printBtnText}>Download & Print Al-Wasiyyah PDF 📜</Text>
+          <Text style={styles.printBtnText}>📤 Share & Export Certified Al-Wasiyyah</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

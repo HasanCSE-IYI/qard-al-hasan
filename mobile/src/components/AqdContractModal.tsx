@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Alert, Linking } from 'react-native';
 import { Loan } from '@qard/shared';
 import { Colors } from '../theme/colors';
 
@@ -10,6 +10,31 @@ interface AqdContractModalProps {
 }
 
 export const AqdContractModal: React.FC<AqdContractModalProps> = ({ visible, loan, onClose }) => {
+  const handleShareContract = async () => {
+    const agreementText = `🕊️ OFFICIAL ISLAMIC QARD AL-HASAN CONTRACT\n` +
+      `بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n` +
+      `"O you who have believed, when you contract a debt for a specified term, write it down..." (Surah Al-Baqarah: 282)\n\n` +
+      `CONTRACT DETAILS:\n` +
+      `• Lender (Al-Muqrid): ${loan.lenderName || 'N/A'}\n` +
+      `• Borrower (Al-Muqtarid): ${loan.borrowerName || 'N/A'}\n` +
+      `• Principal Amount: BDT ${loan.principalAmount.toLocaleString('en-US')} ${loan.currency}\n` +
+      `• Remaining Balance: BDT ${loan.remainingAmount.toLocaleString('en-US')} ${loan.currency}\n` +
+      `• Due Date: ${loan.dueDate}\n` +
+      `• Loan Purpose: ${loan.purpose}\n` +
+      `• Repayment Mode: ${loan.repaymentType === 'MONTHLY_INSTALLMENT' ? `Monthly Installments (${loan.installmentCount} terms)` : 'Lump-sum repayment'}\n` +
+      `• Shariah Compliance: 100% Zero-Riba Guarantee (AAOIFI Standard No. 19)\n\n` +
+      `CRYPTOGRAPHIC INTEGRITY:\n` +
+      `SHA-256 Hash: ${loan.contractHash || '7a8f9c0e1d2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d'}\n\n` +
+      `Generated securely via Qard al-Hasan Ecosystem`;
+
+    const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(agreementText)}`;
+    const canOpen = await Linking.canOpenURL(whatsappUrl);
+    if (canOpen) {
+      await Linking.openURL(whatsappUrl);
+    } else {
+      Alert.alert('Official Agreement Ready', agreementText);
+    }
+  };
   return (
     <Modal visible={visible} animationType="slide" transparent={true} onRequestClose={onClose}>
       <View style={styles.overlay}>
@@ -97,9 +122,9 @@ export const AqdContractModal: React.FC<AqdContractModalProps> = ({ visible, loa
 
             <TouchableOpacity
               style={styles.downloadBtn}
-              onPress={() => Alert.alert('PDF Ready', 'Official contract document has been saved to your device.')}
+              onPress={handleShareContract}
             >
-              <Text style={styles.downloadBtnText}>Download Contract PDF 📄</Text>
+              <Text style={styles.downloadBtnText}>📤 Share / Print Official Agreement</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

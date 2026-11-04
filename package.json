@@ -13,7 +13,7 @@
     "dev:backend": "npm --workspace=backend run dev",
     "build:backend": "npm --workspace=backend run build",
     "start:mobile": "npm --workspace=mobile run start",
-    "test": "npm --workspace=backend test"
+    "test": "node --test tests/*.test.mjs"
   },
   "keywords": [
     "qard-al-hasan",
