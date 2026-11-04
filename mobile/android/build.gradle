@@ -6,7 +6,9 @@ buildscript {
         targetSdkVersion = 34
     }
     repositories {
-        maven { url uri('/root/maven/localMvnRepository') }
+        if (file('/root/maven/localMvnRepository').exists()) {
+            maven { url uri('/root/maven/localMvnRepository') }
+        }
         google()
         mavenCentral()
     }
