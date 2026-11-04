@@ -74,6 +74,16 @@ The resulting APK is generated at:
 
 ---
 
+## 🤖 CI/CD & Automated Android APK Build
+
+This repository includes a production-ready GitHub Actions workflow (`.github/workflows/android-build.yml`):
+- **Automated Verification:** Runs Node.js 20 workspace builds and TypeScript validation on every pull request and push to `main`.
+- **Cloud APK Assembly:** Sets up Java 17 (Temurin) and Gradle to compile and package the debug APK (`qard-al-hasan-debug.apk`).
+- **Instant Artifact Downloads:** Uploads the generated APK directly to the GitHub **Actions** tab with 30-day retention.
+- **Automated Releases:** When a version tag (e.g. `v1.0.0`) is pushed, automatically publishes a GitHub Release with the APK attached.
+
+---
+
 ## 👨‍💻 Author & License
 
 - **Developer:** Mahmud al Hasan ([@HasanCSE-IYI](https://github.com/HasanCSE-IYI))
