@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "App.tsx",
   "scripts": {
+    "start": "node -e \"console.log('Mobile App: Use React Native or build mobile/android with Gradle')\"",
+    "build": "npm run typecheck",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

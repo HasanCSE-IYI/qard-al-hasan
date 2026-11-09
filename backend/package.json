@@ -4,6 +4,7 @@
   "description": "Cloudflare Workers API with Hono, Drizzle ORM and D1 Database",
   "main": "src/index.ts",
   "scripts": {
+    "dev": "node --experimental-strip-types src/dev-server.ts",
     "build": "tsc"
   },
   "dependencies": {

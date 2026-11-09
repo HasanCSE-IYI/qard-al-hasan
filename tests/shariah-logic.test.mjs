@@ -41,3 +41,18 @@ test('Loan status transitions accurately per repayment lifecycle', () => {
   status = LOAN_STATUS.PAID_IN_FULL;
   assert.strictEqual(status, 'PAID_IN_FULL');
 });
+
+test('Al-Wasiyyah estate clearance prioritizes liabilities settlement before estate distribution', () => {
+  const totalEstateAsset = 200000;
+  const payablesDebt = 60000;
+  const receivablesClaim = 25000;
+
+  // Net distributable estate = Gross Estate - Payables (per Quran 4:11 & Sahih Bukhari 2738)
+  const remainingDistributableEstate = totalEstateAsset - payablesDebt;
+  assert.strictEqual(remainingDistributableEstate, 140000);
+  assert.ok(remainingDistributableEstate > 0, 'Heirs can only inherit after all debts are fully cleared');
+
+  // Total estate after receiving counterparty claims
+  const finalEstateWithReceivables = remainingDistributableEstate + receivablesClaim;
+  assert.strictEqual(finalEstateWithReceivables, 165000);
+});

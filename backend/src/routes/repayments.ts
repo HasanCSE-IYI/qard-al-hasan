@@ -30,6 +30,14 @@ repaymentsRouter.post('/', async (c) => {
     return c.json({ success: false, error: 'Unauthorized to record repayment' }, 403);
   }
 
+  if (loan.remainingAmount <= 0 || loan.status === LOAN_STATUS.PAID_IN_FULL || loan.status === LOAN_STATUS.FORGIVEN_IBRA) {
+    return c.json({ success: false, error: 'This loan has already been fully settled or forgiven' }, 400);
+  }
+
+  if (amount > loan.remainingAmount) {
+    return c.json({ success: false, error: `Repayment amount (${amount}) cannot exceed remaining balance (${loan.remainingAmount})` }, 400);
+  }
+
   // Prevent duplicate TrxID entries for the same loan
   if (transactionRef) {
     const existing = await db
@@ -109,6 +117,10 @@ repaymentsRouter.post('/:id/verify', async (c) => {
   const loan = await db.select().from(loans).where(eq(loans.id, repayment.loanId)).get();
   if (!loan || loan.lenderId !== user.id) {
     return c.json({ success: false, error: 'Only the lender can verify and approve payments' }, 403);
+  }
+
+  if (repayment.status === 'CONFIRMED') {
+    return c.json({ success: false, error: 'This payment has already been verified and confirmed' }, 400);
   }
 
   if (action === 'DISPUTE') {

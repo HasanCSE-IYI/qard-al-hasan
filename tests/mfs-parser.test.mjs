@@ -24,6 +24,17 @@ test('parseMfsSms parses standard Nagad cash in payment SMS', () => {
   assert.strictEqual(result.date, '2026-11-04');
 });
 
+test('parseMfsSms parses standard Rocket received payment SMS', () => {
+  const sms = 'DBBL Rocket: You have received Tk 3,000.00 from 01812345678. Txn ID: RCKT123456 on 15-11-2026.';
+  const result = parseMfsSms(sms);
+
+  assert.strictEqual(result.method, 'ROCKET');
+  assert.strictEqual(result.amount, 3000);
+  assert.strictEqual(result.counterpartyPhone, '01812345678');
+  assert.strictEqual(result.trxId, 'RCKT123456');
+  assert.strictEqual(result.date, '15-11-2026');
+});
+
 test('parseMfsSms gracefully handles non-MFS arbitrary text', () => {
   const sms = 'Hello brother, meeting tomorrow at the mosque at 4pm.';
   const result = parseMfsSms(sms);

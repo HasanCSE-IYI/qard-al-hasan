@@ -39,6 +39,7 @@ dist/
 build/
 coverage/
 *.apk
+shared/build.mjs
 
 # Local SQLite DB
 *.db

@@ -32,8 +32,8 @@ export function parseMfsSms(text: string): ParsedMfsData {
     method = 'BKASH';
   }
 
-  // 1. TrxID Pattern: "TrxID 9B8A7C6D" or "TxnID: 9B8A7C6D"
-  const trxMatch = clean.match(/(?:TrxID|TxnID|TxId|TransID|ID)[:\s]+([A-Za-z0-9]+)/i);
+  // 1. TrxID Pattern: "TrxID 9B8A7C6D", "TxnID: 9B8A7C6D", or "Txn ID: 9B8A7C6D"
+  const trxMatch = clean.match(/(?:Trx\s*ID|Txn\s*ID|TxId|Trans\s*ID|ID)[:\s]+([A-Za-z0-9]+)/i);
   if (trxMatch) {
     trxId = trxMatch[1].trim();
   }
@@ -50,8 +50,8 @@ export function parseMfsSms(text: string): ParsedMfsData {
     counterpartyPhone = phoneMatch[1].trim();
   }
 
-  // 4. Date Pattern: "at 12/10/2026" or "on 2026-10-12"
-  const dateMatch = clean.match(/(\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2})/);
+  // 4. Date Pattern: "at 12/10/2026", "on 2026-10-12", or "12-10-2026"
+  const dateMatch = clean.match(/(\d{2}[/-]\d{2}[/-]\d{2,4}|\d{4}-\d{2}-\d{2})/);
   if (dateMatch) {
     date = dateMatch[1];
   }

@@ -17,8 +17,9 @@ authRouter.post('/request-otp', async (c) => {
   }
 
   const { phone } = parsed.data;
-  // 6-digit secure OTP
-  const otp = c.env.ENVIRONMENT === 'development' ? '123456' : Math.floor(100000 + Math.random() * 900000).toString();
+  // 6-digit cryptographically secure OTP
+  const secureRandom = crypto.getRandomValues(new Uint32Array(1))[0];
+  const otp = c.env.ENVIRONMENT === 'development' ? '123456' : (100000 + (secureRandom % 900000)).toString();
   const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes validity
 
   const db = getDb(c.env.DB);

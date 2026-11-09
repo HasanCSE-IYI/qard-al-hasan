@@ -46,7 +46,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ visible, loan, onClo
     if (parsed.method) {
       setMethod(parsed.method);
     }
-    Alert.alert('SMS Parsed Successfully', `Amount: BDT ${parsed.amount || 'N/A'}, TrxID: ${parsed.trxId || 'N/A'}`);
+    if (parsed.amount || parsed.trxId) {
+      Alert.alert('SMS Parsed Successfully', `Method: ${parsed.method || 'MFS'}\nAmount: BDT ${parsed.amount || 'N/A'}\nTrxID: ${parsed.trxId || 'N/A'}`);
+    } else {
+      Alert.alert('Notice', 'No transaction details recognized in the pasted text. Please enter amount and TrxID manually.');
+    }
   };
 
   const handlePaymentSubmit = () => {

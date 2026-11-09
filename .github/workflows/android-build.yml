@@ -32,6 +32,9 @@ jobs:
       - name: Verify TypeScript & Build Workspaces
         run: npm run build --workspaces --if-present
 
+      - name: Run Unit Tests
+        run: npm test
+
       - name: Setup Java 17
         uses: actions/setup-java@v6
         with:

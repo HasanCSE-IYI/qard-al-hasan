@@ -22,7 +22,7 @@ export const GentleReminderModal: React.FC<GentleReminderModalProps> = ({ visibl
   );
 
   const handleSendWhatsApp = async () => {
-    const phone = (loan as any).borrowerPhone || '01700000000';
+    const phone = loan.borrowerPhone || '01700000000';
     const url = buildWhatsAppShareUrl(phone, reminderMessage);
     const canOpen = await Linking.canOpenURL(url);
 

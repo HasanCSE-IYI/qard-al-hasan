@@ -37,7 +37,9 @@ export interface Loan {
   lenderId: string;
   borrowerId: string;
   lenderName?: string;
+  lenderPhone?: string;
   borrowerName?: string;
+  borrowerPhone?: string;
   principalAmount: number;
   remainingAmount: number;
   currency: string;

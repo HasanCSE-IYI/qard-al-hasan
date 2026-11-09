@@ -87,7 +87,7 @@ export const GENTLE_REMINDER_TEMPLATES = [
   {
     id: 'sunnah_hadith',
     title: 'Spiritual Reminder with Prophetic Hadith',
-    text: (borrowerName: string) =>
+    text: (borrowerName: string, _amount?: number, _dueDate?: string) =>
       `Assalamu Alaikum ${borrowerName}. The Messenger of Allah (ﷺ) said: "Whoever grants respite to someone in difficulty, or forgives him, Allah will shade him in His shade on the Day of Resurrection." Wishing you peace, ease, and continued well-being.`,
   },
 ];

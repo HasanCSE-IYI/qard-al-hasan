@@ -10,14 +10,7 @@ export function getFormattedReminderText(
   amount: number,
   dueDate: string
 ): string {
-  const template = GENTLE_REMINDER_TEMPLATES.find((t) => t.id === templateId);
-  if (!template) {
-    return GENTLE_REMINDER_TEMPLATES[0].text(borrowerName, amount, dueDate);
-  }
-
-  if (template.id === 'sunnah_hadith') {
-    return template.text(borrowerName, amount, dueDate);
-  }
+  const template = GENTLE_REMINDER_TEMPLATES.find((t) => t.id === templateId) || GENTLE_REMINDER_TEMPLATES[0];
   return template.text(borrowerName, amount, dueDate);
 }
 

@@ -105,6 +105,13 @@ export const ApiClient = {
     });
   },
 
+  async transferHawala(id: string, newBorrowerPhone: string, newBorrowerName: string, consentEvidenceNote: string) {
+    return this.request<{ message: string; data: any }>(`/loans/${id}/hawala`, {
+      method: 'POST',
+      body: JSON.stringify({ newBorrowerPhone, newBorrowerName, consentEvidenceNote }),
+    });
+  },
+
   // Repayment tracking
   async createRepayment(payload: any) {
     return this.request<Repayment>('/repayments', {

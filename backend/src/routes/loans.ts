@@ -29,7 +29,20 @@ loansRouter.get('/', async (c) => {
   }
 
   const list = await query.all();
-  return c.json({ success: true, data: list });
+  const enhancedList = await Promise.all(
+    list.map(async (loanItem) => {
+      const lender = await db.select({ name: users.name, phone: users.phone }).from(users).where(eq(users.id, loanItem.lenderId)).get();
+      const borrower = await db.select({ name: users.name, phone: users.phone }).from(users).where(eq(users.id, loanItem.borrowerId)).get();
+      return {
+        ...loanItem,
+        lenderName: lender?.name,
+        lenderPhone: lender?.phone,
+        borrowerName: borrower?.name,
+        borrowerPhone: borrower?.phone,
+      };
+    })
+  );
+  return c.json({ success: true, data: enhancedList });
 });
 
 // Get loan details by ID
@@ -258,8 +271,16 @@ loansRouter.post('/:id/forgive', async (c) => {
     return c.json({ success: false, error: 'Only the lender can forgive this loan' }, 403);
   }
 
-  const now = new Date().toISOString();
+  if (loan.remainingAmount <= 0) {
+    return c.json({ success: false, error: 'This loan has already been fully settled or forgiven' }, 400);
+  }
+
   const { forgivenAmount, isFullForgiveness, sadaqahIntentionNote } = parsed.data;
+  if (forgivenAmount > loan.remainingAmount) {
+    return c.json({ success: false, error: `Forgiven amount (${forgivenAmount}) cannot exceed remaining balance (${loan.remainingAmount})` }, 400);
+  }
+
+  const now = new Date().toISOString();
   const newRemaining = Math.max(0, loan.remainingAmount - forgivenAmount);
   const newStatus = newRemaining === 0 ? LOAN_STATUS.FORGIVEN_IBRA : loan.status;
 
@@ -279,5 +300,78 @@ loansRouter.post('/:id/forgive', async (c) => {
     success: true,
     message: 'Loan forgiven successfully as voluntary charity (Al-Ibra) for the sake of Allah',
     data: { newRemaining, status: newStatus },
+  });
+});
+
+// Debt Transfer / Assignment (Al-Hawalah - Sahih al-Bukhari: 2287)
+loansRouter.post('/:id/hawala', async (c) => {
+  const user = c.get('user');
+  const loanId = c.req.param('id');
+  const body = await c.req.json();
+  const parsed = HawalaTransferSchema.safeParse({ ...body, loanId });
+  if (!parsed.success) {
+    return c.json({ success: false, error: parsed.error.errors[0].message }, 400);
+  }
+
+  const db = getDb(c.env.DB);
+  const loan = await db.select().from(loans).where(eq(loans.id, loanId)).get();
+  if (!loan) {
+    return c.json({ success: false, error: 'Loan record not found' }, 404);
+  }
+
+  if (loan.borrowerId !== user.id && loan.lenderId !== user.id) {
+    return c.json({ success: false, error: 'Unauthorized to transfer this debt liability' }, 403);
+  }
+
+  if (loan.remainingAmount <= 0) {
+    return c.json({ success: false, error: 'Cannot transfer a settled or forgiven loan' }, 400);
+  }
+
+  const now = new Date().toISOString();
+  const { newBorrowerPhone, newBorrowerName, consentEvidenceNote } = parsed.data;
+
+  // Lookup or create new borrower profile
+  let newBorrower = await db.select().from(users).where(eq(users.phone, newBorrowerPhone)).get();
+  if (!newBorrower) {
+    const newBorrowerId = crypto.randomUUID();
+    await db.insert(users).values({
+      id: newBorrowerId,
+      name: newBorrowerName,
+      phone: newBorrowerPhone,
+      role: 'INDIVIDUAL',
+      husnScore: 100,
+      isVerified: false,
+      createdAt: now,
+      updatedAt: now,
+    });
+    newBorrower = await db.select().from(users).where(eq(users.id, newBorrowerId)).get();
+  }
+
+  await db.batch([
+    db.update(loans).set({
+      borrowerId: newBorrower!.id,
+      status: LOAN_STATUS.ACTIVE,
+      updatedAt: now,
+    }).where(eq(loans.id, loanId)),
+    db.insert(auditLogs).values({
+      id: crypto.randomUUID(),
+      loanId,
+      actorId: user.id,
+      action: 'HAWALA_TRANSFERRED',
+      payload: JSON.stringify({
+        previousBorrowerId: loan.borrowerId,
+        newBorrowerId: newBorrower!.id,
+        newBorrowerName,
+        newBorrowerPhone,
+        consentEvidenceNote,
+      }),
+      createdAt: now,
+    }),
+  ]);
+
+  return c.json({
+    success: true,
+    message: 'Loan liability successfully transferred under Islamic contract of Al-Hawalah',
+    data: { newBorrowerId: newBorrower!.id, newBorrowerName },
   });
 });

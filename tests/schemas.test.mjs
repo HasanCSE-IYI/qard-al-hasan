@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { CreateLoanSchema, ForgiveLoanSchema, LOAN_STATUS } from '../shared/dist/index.js';
+import { CreateLoanSchema, ForgiveLoanSchema, HawalaTransferSchema, CreateRepaymentSchema, LOAN_STATUS } from '../shared/dist/index.js';
 
 test('CreateLoanSchema accepts valid Qard al-Hasan loan parameters', () => {
   const validPayload = {
@@ -44,5 +44,30 @@ test('ForgiveLoanSchema validates Ibra (forgiveness as charity)', () => {
   };
 
   const parsed = ForgiveLoanSchema.safeParse(forgivePayload);
+  assert.strictEqual(parsed.success, true);
+});
+
+test('HawalaTransferSchema validates debt liability transfer assignment', () => {
+  const hawalaPayload = {
+    loanId: 'loan-123',
+    newBorrowerName: 'Sajid Al-Amin',
+    newBorrowerPhone: '01812345678',
+    consentEvidenceNote: 'Mutual agreement confirmed in writing per Hadith 2287',
+  };
+
+  const parsed = HawalaTransferSchema.safeParse(hawalaPayload);
+  assert.strictEqual(parsed.success, true);
+});
+
+test('CreateRepaymentSchema validates payment parameters with MFS method', () => {
+  const repaymentPayload = {
+    loanId: 'loan-123',
+    amount: 5000,
+    paymentDate: '2026-11-09',
+    paymentMethod: 'BKASH',
+    transactionRef: '9B8A7C6D',
+  };
+
+  const parsed = CreateRepaymentSchema.safeParse(repaymentPayload);
   assert.strictEqual(parsed.success, true);
 });
