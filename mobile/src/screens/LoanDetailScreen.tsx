@@ -16,6 +16,7 @@ import { GentleReminderModal } from '../components/GentleReminderModal';
 import { IbraModal } from '../components/IbraModal';
 import { AqdContractModal } from '../components/AqdContractModal';
 import { RescheduleModal } from '../components/RescheduleModal';
+import { HawalaModal } from '../components/HawalaModal';
 
 interface LoanDetailScreenProps {
   loan: Loan;
@@ -26,6 +27,7 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
   const user = useAppStore((state) => state.user);
   const loans = useAppStore((state) => state.loans);
   const grantHardshipExtension = useAppStore((state) => state.grantHardshipExtension);
+  const transferHawala = useAppStore((state) => state.transferHawala);
 
   // Read updated loan record from live state
   const loan = loans.find((l) => l.id === initialLoan.id) || initialLoan;
@@ -35,6 +37,7 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
   const [showIbraModal, setShowIbraModal] = useState(false);
   const [showAqdModal, setShowAqdModal] = useState(false);
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [showHawalaModal, setShowHawalaModal] = useState(false);
 
   const isLender = loan.lenderId === user?.id;
   const isBorrower = loan.borrowerId === user?.id;
@@ -50,6 +53,14 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
     Alert.alert(
       'Grace Period Granted (Inzar)',
       `Loan term extended until ${newDate}.\nReason: ${reason}\n\n"And if someone is in hardship, then let there be postponement until ease." (Quran 2:280)`
+    );
+  };
+
+  const handleConfirmHawala = (newName: string, newPhone: string, consentNote: string) => {
+    transferHawala(loan.id, newName, newPhone);
+    Alert.alert(
+      'Al-Hawalah Executed',
+      `Debt liability successfully transferred to ${newName} (${newPhone}).\nNote: ${consentNote}\n\n(Sahih al-Bukhari: 2287)`
     );
   };
 
@@ -149,6 +160,17 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
               <Text style={styles.actionCardSub}>Extend term without penalty</Text>
             </TouchableOpacity>
           )}
+
+          {loan.remainingAmount > 0 ? (
+            <TouchableOpacity
+              style={[styles.actionCard, { backgroundColor: '#F0F9FF' }]}
+              onPress={() => setShowHawalaModal(true)}
+            >
+              <Text style={styles.actionCardIcon}>🔄</Text>
+              <Text style={[styles.actionCardTitle, { color: '#0369A1' }]}>Debt Transfer (Hawalah)</Text>
+              <Text style={styles.actionCardSub}>Transfer debt to consenting party</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
 
         {/* Contract Terms */}
@@ -200,6 +222,14 @@ export const LoanDetailScreen: React.FC<LoanDetailScreenProps> = ({ loan: initia
           onClose={() => setShowRescheduleModal(false)}
           currentDueDate={loan.dueDate}
           onConfirm={handleConfirmReschedule}
+        />
+      ) : null}
+      {showHawalaModal ? (
+        <HawalaModal
+          visible={showHawalaModal}
+          onClose={() => setShowHawalaModal(false)}
+          loan={loan}
+          onConfirm={handleConfirmHawala}
         />
       ) : null}
     </SafeAreaView>

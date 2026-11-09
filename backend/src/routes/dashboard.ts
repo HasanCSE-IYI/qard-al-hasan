@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { eq, or, and, desc, sql } from 'drizzle-orm';
+import { eq, or, and, desc, inArray } from 'drizzle-orm';
 import { Bindings, getDb } from '../db';
 import { loans, repayments } from '../db/schema';
 import { LOAN_STATUS } from '@qard/shared';
@@ -21,7 +21,7 @@ dashboardRouter.get('/summary', async (c) => {
 
   for (const l of lentLoans) {
     totalLent += l.principalAmount;
-    if (l.status === LOAN_STATUS.ACTIVE || l.status === LOAN_STATUS.PARTIALLY_PAID) {
+    if (l.status === LOAN_STATUS.ACTIVE || l.status === LOAN_STATUS.PARTIALLY_PAID || l.status === LOAN_STATUS.HARDSHIP_REVIEW) {
       activeGivenCount++;
     }
     if (l.status === LOAN_STATUS.FORGIVEN_IBRA) {
@@ -40,7 +40,7 @@ dashboardRouter.get('/summary', async (c) => {
 
   for (const b of borrowedLoans) {
     totalBorrowed += b.principalAmount;
-    if (b.status === LOAN_STATUS.ACTIVE || b.status === LOAN_STATUS.PARTIALLY_PAID) {
+    if (b.status === LOAN_STATUS.ACTIVE || b.status === LOAN_STATUS.PARTIALLY_PAID || b.status === LOAN_STATUS.HARDSHIP_REVIEW) {
       activeTakenCount++;
       if (b.dueDate && b.dueDate <= next7Days) {
         upcomingDueCount++;
@@ -61,7 +61,7 @@ dashboardRouter.get('/summary', async (c) => {
     recentRepayments = await db
       .select()
       .from(repayments)
-      .where(sql`${repayments.loanId} IN ${loanIds}`)
+      .where(inArray(repayments.loanId, loanIds))
       .orderBy(desc(repayments.createdAt))
       .limit(10)
       .all();

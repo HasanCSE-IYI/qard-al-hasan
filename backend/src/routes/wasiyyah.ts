@@ -26,7 +26,11 @@ wasiyyahRouter.get('/statement', async (c) => {
     .where(
       and(
         eq(loans.lenderId, authUser.id),
-        or(eq(loans.status, LOAN_STATUS.ACTIVE), eq(loans.status, LOAN_STATUS.PARTIALLY_PAID))
+        or(
+          eq(loans.status, LOAN_STATUS.ACTIVE),
+          eq(loans.status, LOAN_STATUS.PARTIALLY_PAID),
+          eq(loans.status, LOAN_STATUS.HARDSHIP_REVIEW)
+        )
       )
     )
     .all();
@@ -53,7 +57,11 @@ wasiyyahRouter.get('/statement', async (c) => {
     .where(
       and(
         eq(loans.borrowerId, authUser.id),
-        or(eq(loans.status, LOAN_STATUS.ACTIVE), eq(loans.status, LOAN_STATUS.PARTIALLY_PAID))
+        or(
+          eq(loans.status, LOAN_STATUS.ACTIVE),
+          eq(loans.status, LOAN_STATUS.PARTIALLY_PAID),
+          eq(loans.status, LOAN_STATUS.HARDSHIP_REVIEW)
+        )
       )
     )
     .all();

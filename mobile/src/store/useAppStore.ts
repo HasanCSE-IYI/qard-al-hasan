@@ -19,6 +19,7 @@ interface AppState {
   addRepayment: (repayment: Repayment) => void;
   forgiveLoan: (loanId: string, amount: number) => void;
   grantHardshipExtension: (loanId: string, newDueDate: string) => void;
+  transferHawala: (loanId: string, newBorrowerName: string, newBorrowerPhone: string) => void;
   seedDemoData: () => void;
 }
 
@@ -220,6 +221,20 @@ export const useAppStore = create<AppState>((set, get) => ({
   grantHardshipExtension: (loanId, newDueDate) =>
     set((state) => ({
       loans: state.loans.map((l) => (l.id === loanId ? { ...l, dueDate: newDueDate, status: LOAN_STATUS.ACTIVE } : l)),
+    })),
+
+  transferHawala: (loanId, newBorrowerName, newBorrowerPhone) =>
+    set((state) => ({
+      loans: state.loans.map((l) =>
+        l.id === loanId
+          ? {
+              ...l,
+              borrowerName: newBorrowerName,
+              borrowerPhone: newBorrowerPhone,
+              updatedAt: new Date().toISOString(),
+            }
+          : l
+      ),
     })),
 
   seedDemoData: () =>
